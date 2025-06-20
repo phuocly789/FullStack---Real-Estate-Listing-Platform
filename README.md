@@ -1,6 +1,6 @@
 # 🏘️ Real Estate Listing Platform  
-# Người Thực Hiện : Lý Minh Phước  
-# Link Deploy :   
+- Người Thực Hiện : Lý Minh Phước  
+- Link Deploy :   
 
 Nền tảng Đăng tin Bất động sản Full Stack cho phép người dùng đăng, tìm kiếm và liên hệ bất động sản thông qua giao diện hiện đại, tích hợp bản đồ và các bộ lọc nâng cao.
 
