@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  area        Float
+  location    String
+  type        String   // house, apartment, land
+  images      String[] // Array of image URLs
+  bedrooms    Int?
+  bathrooms   Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  contacts    Contact[]
+  favorites   Favorite[]
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String
+  email     String     @unique
+  password  String
+  role      String     // user, admin
+  phone     String?
+  avatar    String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  properties Property[]
+  contacts   Contact[]
+  favorites  Favorite[]
+}
+
+model Contact {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  propertyId  Int
+  message     String
+  status      String   // pending, replied, closed
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  property    Property @relation(fields: [propertyId], references: [id])
+}
+
+model Favorite {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  propertyId  Int
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  property    Property @relation(fields: [propertyId], references: [id])
+}

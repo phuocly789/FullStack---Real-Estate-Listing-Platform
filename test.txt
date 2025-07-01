@@ -1,0 +1,3 @@
+chạy be 
+npx prisma db push
+>> npm run start:dev

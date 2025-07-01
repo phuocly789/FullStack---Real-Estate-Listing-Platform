@@ -1,0 +1,57 @@
+.adSection {
+  padding-left: 15px;
+}
+
+.adCard {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 15px;
+  width: 80%;
+}
+
+.adImage {
+  width: 100%;
+  height: auto;
+}
+
+.adContent {
+  padding: 10px;
+  text-align: center;
+  background-color: #f8f9fa;
+}
+
+.adTitle {
+  font-size: 1.1rem;
+  color: #333;
+  margin: 0;
+}
+
+.adText {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 5px 0;
+}
+
+.adButton {
+  width: 100%;
+  padding: 5px;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.adDanger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.adSuccess {
+  background-color: #28a745;
+  color: white;
+}
+
+.adButton:hover {
+  opacity: 0.9;
+}

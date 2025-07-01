@@ -1,0 +1,95 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f0f2f5; /* nền sáng nhẹ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .formContainer {
+    width: 320px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    text-align: center;
+    transition: all 0.5s ease;
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  .slideIn {
+    animation: slideIn 0.5s forwards;
+  }
+  
+  .slideOut {
+    animation: slideOut 0.5s forwards;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-30%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      opacity: 0;
+      transform: translateX(30%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input {
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  button {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .switchButton {
+    margin-top: 15px;
+    background: none;
+    border: none;
+    color: #ff0000;
+    cursor: pointer;
+    text-decoration: none;
+    background: none;
+  }
+  .switchButton:hover {
+    text-decoration: underline;
+    background:none;
+  }
+  

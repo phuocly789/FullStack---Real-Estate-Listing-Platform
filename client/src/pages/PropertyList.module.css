@@ -1,0 +1,38 @@
+.section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 16px;
+  }
+  
+  .heading {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 24px;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  
+  .buttonWrapper {
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  .expandButton {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 4px;
+    color: rgb(78, 77, 77);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .expandButton:hover {
+    background-color: #f7f7f7;
+  }
+  

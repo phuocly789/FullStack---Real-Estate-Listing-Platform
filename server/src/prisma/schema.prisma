@@ -1,0 +1,19 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid()) // Prisma tự tạo ID
+  name      String  
+  email     String   @unique
+  phone     String
+  password  String
+  role      String   @default("user") // Thêm role với giá trị mặc định
+  avatar    String   @default("")     // Thêm avatar với giá trị mặc định
+  createdAt DateTime @default(now())
+}
