@@ -1,31 +1,35 @@
 import React from 'react';
 import styles from './SlideBar.module.css';
-import { NavLink } from 'react-router-dom';
 import { FaUser, FaHome } from 'react-icons/fa';
 
-const SlideBar = () => {
+const SlideBar = ({ setActiveTab, activeTab }) => {
     return (
         <div className={styles.sidebar}>
-            <NavLink
-                to="/profile/overview"
-                className={({ isActive }) =>
-                    `${styles.navItem} ${isActive ? styles.active : ''}`
-                }
-                end
+            <button
+                className={`${styles.navItem} ${activeTab === 'overview' ? styles.active : ''
+                    }`}
+                onClick={() => setActiveTab('overview')}
             >
                 <FaHome className={styles.icon} />
                 <span>Tổng quan</span>
-            </NavLink>
+            </button>
 
-            <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                    `${styles.navItem} ${isActive ? styles.active : ''}`
-                }
+            <button
+                className={`${styles.navItem} ${activeTab === 'personal' ? styles.active : ''
+                    }`}
+                onClick={() => setActiveTab('personal')}
             >
                 <FaUser className={styles.icon} />
                 <span>Hồ sơ</span>
-            </NavLink>
+            </button>
+            <button
+                className={`${styles.navItem} ${activeTab === 'personal' ? styles.active : ''
+                    }`}
+                onClick={() => setActiveTab('personal')}
+            >
+                <FaUser className={styles.icon} />
+                <span>Hồ sơ</span>
+            </button>
         </div>
     );
 };

@@ -1,0 +1,57 @@
+/* Profile.module.css */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+}
+
+.heading {
+  font-size: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.tabs button {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+  position: relative; /* Thêm để định vị ::after */
+}
+
+.tabs button:hover {
+  color: red;
+}
+
+.tabs button.active {
+  color: red;
+  border-bottom: 2px solid red;
+  border-radius: 0;
+}
+
+.tabs button::after {
+  content: '';
+  display: block; 
+  border-bottom: 2px solid red;
+  width: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: width 0.3s ease; 
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tabs button:hover::after {
+  width: 100%; 
+}

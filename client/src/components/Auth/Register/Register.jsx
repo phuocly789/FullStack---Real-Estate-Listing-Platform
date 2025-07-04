@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Register.module.css';
-import axios from 'axios';
-
+import { useRegisterMutation } from '../../../api/apiSlice';
+import { useNavigate } from 'react-router-dom';
+import Toast from '../../Toast/Toast';
 const Register = () => {
+    const [toast, setToast] = useState({ message: '', type: '' });
     const [formData, setFormData] = useState({
-        fullName: '',
+        name: '',
         email: '',
         phone: '',
         password: '',
     });
+    const [register, { isLoading }] = useRegisterMutation();
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,14 +21,30 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3000/auth/register', formData);
-            localStorage.setItem('token', res.data.token);
-            alert('Đăng ký thành công!');
-            window.location.href = '/login';
+            const { access_token } = await register(formData).unwrap();
+            localStorage.setItem('token', access_token);
+            setToast({ message: 'Đăng ký thành công!', type: 'success' });
+
+
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 1500);
         } catch (error) {
-            alert(error.response?.data?.message || 'Lỗi đăng ký');
+            setToast({
+                message: error.response?.data?.message || 'Đăng ký thất bại!',
+                type: 'error',
+            });
         }
     };
+    useEffect(() => {
+        if (toast.message) {
+            const timer = setTimeout(() => {
+                setToast({ message: '', type: '' });
+            }, 3000); // Tự tắt sau 3 giây
+
+            return () => clearTimeout(timer); // Clear nếu component unmount
+        }
+    }, [toast]);
 
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -44,11 +64,16 @@ const Register = () => {
                 </svg>
             </a>
             <h2>Đăng ký</h2>
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ message: '', type: '' })}
+            />
             <input
                 type="text"
-                name="fullName"
+                name="name"
                 placeholder="Tên đầy đủ"
-                value={formData.fullName}
+                value={formData.name}
                 onChange={handleChange}
                 required
             />
@@ -76,7 +101,9 @@ const Register = () => {
                 onChange={handleChange}
                 required
             />
-            <button type="submit">Đăng ký</button>
+            <button type="submit" variant="primary" disabled={isLoading}>
+                {isLoading ? 'Đang đăng ký...' : 'Đăng ký'}
+            </button>
         </form>
     );
 };

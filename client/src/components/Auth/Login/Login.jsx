@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 import axios from 'axios';
-
+import { useLoginMutation } from '../../../api/apiSlice';
+import Toast from '../../Toast/Toast';
 const Login = () => {
+    const [login, { isLoading }] = useLoginMutation();
+    const [toast, setToast] = useState({ message: '', type: '' });
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -15,19 +18,23 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:3000/auth/login', formData);
-            console.log('Phản hồi từ API:', res.data); // Ghi log để kiểm tra
-            const token = res.data.access_token; // Sử dụng access_token thay vì token
-            if (!token) {
-                throw new Error('Không tìm thấy token trong phản hồi API');
-            }
+            const res = await login(formData).unwrap();
+            console.log('Phản hồi từ API:', res);
+
+            const token = res.access_token;
+            if (!token) throw new Error('Không tìm thấy token');
+
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(res.data.user || {})); // Lưu user nếu có
-            alert('Đăng nhập thành công!');
-            window.location.href = '/';
+
+            setTimeout(() => {
+                setToast({ message: 'Đăng nhập thành công!', type: 'success' });
+                window.location.href = '/';
+            }, 1500);
         } catch (error) {
-            console.error('Lỗi đăng nhập:', error);
-            alert(error.response?.data?.message || 'Lỗi đăng nhập');
+            setToast({
+                message: error.response?.data?.message || 'Đăng nhập thất bại!',
+                type: 'error',
+            });
         }
     };
 
@@ -49,6 +56,11 @@ const Login = () => {
                 </svg>
             </a>
             <h2>Đăng nhập</h2>
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ message: '', type: '' })}
+            />
             <form className={styles.form} onSubmit={handleSubmit}>
                 <input
                     type="email"
@@ -66,7 +78,9 @@ const Login = () => {
                     onChange={handleChange}
                     required
                 />
-                <button type="submit">Đăng nhập</button>
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                </button>
             </form>
         </div>
     );

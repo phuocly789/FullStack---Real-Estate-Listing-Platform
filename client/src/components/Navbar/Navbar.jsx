@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import navItem from './Navbar.module.css';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
+import { useGetProfileQuery } from '../../api/apiSlice';
 
 const Tabs = [
     { name: 'Trang Chủ', link: '/' },
@@ -10,31 +11,40 @@ const Tabs = [
 ];
 
 const Navbar = () => {
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    // Giả sử bạn có API để lấy thông tin người dùng
-                    const res = await axios.get('http://localhost:3000/auth/me', {
-                        headers: { Authorization: `Bearer ${token}` },
-                    });
-                    setUser(res.data.user); // Giả sử API trả về đối tượng user với trường name
-                } catch (error) {
-                    console.error('Lỗi lấy thông tin người dùng:', error);
-                    localStorage.removeItem('token'); // Xóa token nếu không hợp lệ
-                    setUser(null);
-                }
-            }
-        };
-        fetchUser();
-    }, []);
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         const token = localStorage.getItem('token');
+    //         if (token) {
+    //             try {
+    //                 // Giả sử bạn có API để lấy thông tin người dùng
+    //                 const res = await axios.get('http://localhost:3000/auth/me', {
+    //                     headers: { Authorization: `Bearer ${token}` },
+    //                 });
+    //                 setUser(res.data.user); // Giả sử API trả về đối tượng user với trường name
+    //             } catch (error) {
+    //                 console.error('Lỗi lấy thông tin người dùng:', error);
+    //                 localStorage.removeItem('token'); // Xóa token nếu không hợp lệ
+    //                 setUser(null);
+    //             }
+    //         }
+    //     };
+    //     fetchUser();
+    // }, []);
+
+    const { data: user, isError } = useGetProfileQuery(undefined, {
+        skip: !localStorage.getItem('token'),
+    });
+
+    // Xử lý lỗi token không hợp lệ
+    if (isError && localStorage.getItem('token')) {
+        localStorage.removeItem('token');
+        window.location.reload();
+      }
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        setUser(null);
         window.location.href = '/';
     };
 
@@ -85,7 +95,7 @@ const Navbar = () => {
                                         </button>
                                     </li>
                                     <li className={navItem.dropdownItem}>
-                                        <a href="/profile/overview" className={navItem.dropdownLink}>Hồ Sơ Cá Nhân</a>
+                                        <a href="/profile" className={navItem.dropdownLink}>Hồ Sơ Cá Nhân</a>
                                     </li>
                                 </ul>
                             </li>
