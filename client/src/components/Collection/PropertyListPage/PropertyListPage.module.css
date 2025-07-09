@@ -1,0 +1,87 @@
+.section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px;
+}
+
+.heading {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.buttonWrapper {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.expandButton {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 4px;
+    color: rgb(78, 77, 77);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.expandButton:hover {
+    background-color: #f7f7f7;
+}
+
+.heading {
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.buttonWrapper {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.expandButton {
+    padding: 10px 20px;
+    background-color: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.expandButton:hover {
+    background-color: #005BB5;
+}
+
+.loading,
+.error,
+.empty {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    padding: 20px;
+}
+
+.error {
+    color: #FF3B30;
+}
+
+.hr {
+    width: 50%;
+    text-align: center;
+    margin: 20px auto;
+    color: black;
+}

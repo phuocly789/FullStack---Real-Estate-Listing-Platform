@@ -1,0 +1,23 @@
+/* src/components/AdminContact/AdminContact.css */
+.table th,
+.table td {
+    vertical-align: middle;
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary,
+.btn-danger {
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}

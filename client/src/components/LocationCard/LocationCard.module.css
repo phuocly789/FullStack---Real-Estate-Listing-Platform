@@ -1,0 +1,30 @@
+.card {
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    height: 150px;
+    flex: 1;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .card:hover {
+    transform: scale(1.02);
+  }
+  
+  .large {
+    grid-row: span 2;
+    height: 100%;
+  }
+  
+  .overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+    color: #fff;
+    padding: 12px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  

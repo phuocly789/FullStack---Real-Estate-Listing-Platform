@@ -1,0 +1,93 @@
+.navItem {
+    /* display: inline-block; */
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    list-style: none;
+    /* font-weight: bold; */
+}
+
+.navLink {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s ease;
+    position: relative;
+    padding-bottom: 1px;
+    list-style: none;
+  }
+ 
+  .navLink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 2.5px;
+    background-color: #ff0000;
+    transition: width 0.3s ease;
+  }
+  .navLink:hover::after {
+    width: 100%;
+  }
+  .navLink:hover {
+    color: #ff0000;
+  }
+
+/* Class sẽ được áp dụng cho NavLink khi nó active */
+.activeLink {
+    color: red;
+    border-bottom: 3px solid red;
+    padding-bottom:2px ;
+}
+.userWrapper {
+  position: relative;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 120%; /* nằm dưới tên user */
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  min-width: 160px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.userWrapper:hover .dropdownMenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdownItem {
+  padding: 10px 15px;
+  transition: background 0.2s ease;
+  list-style: none;
+}
+
+.dropdownItem:hover {
+  background-color: #f0f0f0;
+}
+
+.dropdownItem button,
+.dropdownLink {
+  all: unset;
+  cursor: pointer;
+  width: 100%;
+  display: block;
+  color: #333;
+  font-size: 14px;
+}
+
+.dropdownLink:hover {
+  color: #ff0000;
+}

@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(255)
+  email     String     @unique @db.VarChar(255)
+  password  String     @db.VarChar(255)
+  phone     String?    @db.VarChar(20)
+  avatar    String?
+  role      role?      @default(USER)
+  createdAt DateTime?  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime?  @default(now()) @updatedAt @db.Timestamptz(6)
+  contact   contact[]
+  favorite  favorite[]
+  property  property[]
+}
+
+model contact {
+  id           Int            @id @default(autoincrement())
+  userid       Int
+  propertyid   Int
+  message      String
+  status       contactstatus? @default(PENDING)
+  createdat    DateTime?      @default(now()) @db.Timestamptz(6)
+  updatedat    DateTime?      @default(now()) @db.Timestamptz(6)
+  replymessage String?
+  property     property       @relation(fields: [propertyid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  User         User           @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([propertyid], map: "idx_contact_propertyid")
+  @@index([userid], map: "idx_contact_userid")
+}
+
+model favorite {
+  id         Int       @id @default(autoincrement())
+  userid     Int
+  propertyid Int
+  createdat  DateTime? @default(now()) @db.Timestamptz(6)
+  property   property  @relation(fields: [propertyid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  User       User      @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([propertyid], map: "idx_favorite_propertyid")
+  @@index([userid], map: "idx_favorite_userid")
+}
+
+model property {
+  id          Int          @id @default(autoincrement())
+  title       String       @db.VarChar(255)
+  description String
+  price       Float
+  area        Float
+  location    String       @db.VarChar(255)
+  latitude    Float?
+  longitude   Float?
+  type        propertytype
+  images      String[]     @default([])
+  bedrooms    Int?
+  bathrooms   Int?
+  userid      Int
+  createdat   DateTime?    @default(now()) @db.Timestamptz(6)
+  updatedat   DateTime?    @default(now()) @db.Timestamptz(6)
+  contact     contact[]
+  favorite    favorite[]
+  User        User         @relation(fields: [userid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([area], map: "idx_property_area")
+  @@index([location], map: "idx_property_location")
+  @@index([price], map: "idx_property_price")
+  @@index([type], map: "idx_property_type")
+  @@index([userid], map: "idx_property_userid")
+}
+
+enum contactstatus {
+  PENDING
+  RESPONDED
+  CLOSED
+}
+
+enum propertytype {
+  HOUSE
+  APARTMENT
+  LAND
+}
+
+enum role {
+  USER
+  ADMIN
+}

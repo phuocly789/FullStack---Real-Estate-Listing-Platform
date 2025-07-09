@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String?   @db.VarChar(20)
+  password  String
+  role      Role      @default(USER)
+  avatar    String?   @default("")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  properties Property[]
+  contacts   Contact[]
+  favorites  Favorite[]
+}
+
+model Property {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  price       Float
+  area        Float
+  location    String
+  latitude    Float?
+  longitude   Float?
+  type        PropertyType
+  images      String[]     @default([])
+  bedrooms    Int?
+  bathrooms   Int?
+  userid      Int    
+  user        User         @relation(fields: [userid], references: [id], onDelete: Cascade)
+  contacts    Contact[]
+  favorites   Favorite[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Contact {
+  id         Int           @id @default(autoincrement())
+  userid     Int    
+  propertyid Int           
+  message    String
+  replyMessage  String?    
+  status     ContactStatus @default(PENDING)
+  user       User          @relation(fields: [userid], references: [id], onDelete: Cascade)
+  property   Property      @relation(fields: [propertyid], references: [id], onDelete: Cascade)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Favorite {
+  id         Int      @id @default(autoincrement())
+  userid     Int     
+  propertyid Int     
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyid], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  LAND
+}
+
+enum ContactStatus {
+  PENDING
+  RESPONDED
+  CLOSED
+}
