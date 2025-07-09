@@ -9,7 +9,6 @@ const AdminDashBoard = () => {
     const { data: contacts = [], isLoading: loadingContacts } = useGetContactsQuery(
         profile ? { userid: profile.userid, role: profile.role } : skipToken
     );
-    
     const properties = propertiesJson?.properties || [];
     console.log(contacts);
 
@@ -149,6 +148,8 @@ const AdminDashBoard = () => {
                     </table>
                 </div>
             </div>
+=======
+>>>>>>> 68deeea599c96a3bc3cd9d4dd7162c845cbdf476
         </div>
     );
 };

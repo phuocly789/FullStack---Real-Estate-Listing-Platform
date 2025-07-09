@@ -14,6 +14,7 @@ import AdminContact from './components/Admin/AdminContact/AdminContact';
 import EditProperty from './components/Admin/AdminProperties/EditProperty';
 import AddProperty from './components/Admin/AdminProperties/AddProperty';
 
+
 const App = () => (
   <Router>
     <Routes>
@@ -54,6 +55,7 @@ const App = () => (
         path="/admin_properties/Add"
         element={<ProtectedRoute element={<AddProperty />} allowedRoles={['ADMIN']} />}
       />
+      <Route
 
     </Routes>
   </Router>
