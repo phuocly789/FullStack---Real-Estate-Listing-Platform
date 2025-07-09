@@ -4,9 +4,9 @@ import properties from '../../../data/properties';
 import PropertyCard from '../../PropertyCard/PropertyCard';
 import { useGetPropertiesQuery, useGetPropertyCountByUserQuery } from '../../../api/apiSlice';
 const SimilarProperties = ({ currentId }) => {
-    const { data: properties, isLoading, isError, isFetching } = useGetPropertiesQuery({ page: 1, limit: 50 });
+    const { data, isLoading, isError, isFetching } = useGetPropertiesQuery({ page: 1, limit: 50 });
 
-
+    const properties=data?.properties
     if (isLoading && !isFetching) {
         return <div className={styles.loading}>Loading......</div>;
     }

@@ -1,5 +1,5 @@
 // src/contacts/contacts.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { ContactsService } from './contacts.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 // import { UpdateContactDto } from './dto/update-contact.dto';
@@ -13,7 +13,11 @@ export class ContactsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Request() req, @Body() createContactDto: CreateContactDto) {
-    return this.contactsService.create(req.user.userId, createContactDto);
+    try {
+      return await this.contactsService.create(req.user.userId, createContactDto);
+    } catch (error) {
+      throw new BadRequestException(error.message || 'Lỗi khi tạo liên hệ');
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -24,8 +28,16 @@ export class ContactsController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
-    return this.contactsService.update(+id, updateContactDto);
+  async update(@Request() req, @Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
+    try {
+      // Kiểm tra quyền admin
+      if (req.user.role !== 'ADMIN') {
+        throw new ForbiddenException('Chỉ admin mới có thể cập nhật liên hệ');
+      }
+      return await this.contactsService.update(+id, updateContactDto);
+    } catch (error) {
+      throw new BadRequestException(error.message || 'Lỗi khi cập nhật liên hệ');
+    }
   }
 
   @UseGuards(JwtAuthGuard)

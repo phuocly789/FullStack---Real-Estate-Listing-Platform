@@ -52,24 +52,7 @@ const AdminProperties = () => {
             setIsSuccess(false);
         }
     };
-=======
-import React, { useEffect } from 'react';
-import { useGetAllUsersQuery, useGetPropertiesQuery, useGetContactsQuery, useGetProfileQuery } from '../../../api/apiSlice';
-import { Link } from 'react-router-dom';
-import Navbar from '../../Navbar/Navbar';
-import Footer from '../../Footer/Footer';
 
-const AdminProperties = () => {
-    const { data: users = [], isLoading: loadingUsers } = useGetAllUsersQuery();
-    const { data: propertiesJson = [], isLoading: loadingProperties } = useGetPropertiesQuery({}, { refetchOnMountOrArgChange: true });
-    const { data: profile = [] } = useGetProfileQuery();
-    const { data: contacts = [], isLoading: loadingContacts } = useGetContactsQuery(
-        profile ? { userid: profile.userid, role: profile.role } : skipToken
-    );
-    const properties = propertiesJson?.properties || [];
-    console.log(contacts);
-
->>>>>>> 68deeea599c96a3bc3cd9d4dd7162c845cbdf476
     return (
         <>
             <Navbar />
@@ -90,204 +73,148 @@ const AdminProperties = () => {
                 <h2 className="mb-4">Trang Quản Trị</h2>
 
                 {/* Cards thống kê */}
-                <div className="row mb-4">
-                    <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
-                        <div className="card text-white bg-primary">
-                            <div className="card-body">
-                                <h5 className="card-title">Tổng BĐS</h5>
-                                <p className="card-text display-6">
-                                    {loadingProperties ? '...' : properties.length}
-                                </p>
+                    <div className="row mb-4">
+                        {/* <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
+                            <div className="card text-white bg-primary">
+                                <div className="card-body">
+                                    <h5 className="card-title">Tổng BĐS</h5>
+                                    <p className="card-text display-6">
+                                        {loadingProperties ? '...' : properties.length}
+                                    </p>
+                                </div>
+                            </div>
+                        </Link> */}
+
+                        <div className="card">
+                            <div className="card-header d-flex justify-content-between">
+                                <strong>Danh sách BĐS</strong>
+                                <Link to="/admin_properties/add" className="btn btn-success ">
+                                    + Thêm Bất Động Sản
+                                </Link>
+                            </div>
+                            <div className="card-body table-responsive">
+                                <table className="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Tiêu đề</th>
+                                            <th>Loại</th>
+                                            <th>Diện tích</th>
+                                            <th>Vị trí</th>
+                                            <th>Hình ảnh</th>
+                                            <th>Phòng ngủ</th>
+                                            <th>Phòng tắm</th>
+                                            <th>Mô tả</th>
+                                            <th>Giá</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Hành Động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {loadingProperties ? (
+                                            <tr><td colSpan="4">Đang tải...</td></tr>
+                                        ) : (
+                                            properties.map((property) => (
+                                                <tr key={property.id} className={styles.fadeInRow}>
+                                                    <td>{property.title}</td>
+                                                    <td>{property.type}</td>
+                                                    <td>{property.area} m2</td>
+                                                    <td>{property.location}</td>
+                                                    <td className={styles.img}><img src={property.images[0]} alt="" /></td>
+                                                    <td>{property.bedrooms}</td>
+                                                    <td>{property.bathrooms}</td>
+                                                    <td className={styles.description}>{property.description}</td>
+                                                    <td>{property.price.toLocaleString()}đ</td>
+                                                    <td>{new Date(property.createdat).toLocaleDateString()}</td>
+                                                    <td>
+                                                        <div className={styles.actionButtons}>
+                                                            <button className={styles.actionButton} title="Chỉnh sửa" onClick={() => handleEdit(property.id)}>
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    height="20px"
+                                                                    viewBox="0 -960 960 960"
+                                                                    width="20px"
+                                                                    fill="#FFC107"
+                                                                >
+                                                                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
+                                                                </svg>
+                                                            </button>
+                                                            <button className={styles.actionButton} title="Xoá" onClick={() => openConfirmModal(property.id)}>
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    height="20px"
+                                                                    viewBox="0 -960 960 960"
+                                                                    width="20px"
+                                                                    fill="#DC3545"
+                                                                >
+                                                                    <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </Link> */}
+                    </div>
+                    <div className="d-flex justify-content-center my-4">
+                        {totalPages > 1 && (
+                            <button onClick={handlePrevPage} className="btn btn-outline-primary mx-2" disabled={page === 1}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="24px"
+                                    viewBox="0 -960 960 960"
+                                    width="24px"
+                                    fill="#1f1f1f"
+                                >
+                                    <path
+                                        d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z"
+                                    />
+                                </svg>
 
-                    <div className="card">
-                        <div className="card-header d-flex justify-content-between">
-                            <strong>Danh sách BĐS</strong>
-                            <Link to="/admin_properties/add" className="btn btn-success ">
-                                + Thêm Bất Động Sản
-                            </Link>
-                        </div>
-                        <div className="card-body table-responsive">
-                            <table className="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Tiêu đề</th>
-                                        <th>Loại</th>
-                                        <th>Diện tích</th>
-                                        <th>Vị trí</th>
-                                        <th>Hình ảnh</th>
-                                        <th>Phòng ngủ</th>
-                                        <th>Phòng tắm</th>
-                                        <th>Mô tả</th>
-                                        <th>Giá</th>
-                                        <th>Ngày tạo</th>
-                                        <th>Hành Động</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {loadingProperties ? (
-                                        <tr><td colSpan="4">Đang tải...</td></tr>
-                                    ) : (
-                                        properties.map((property) => (
-                                            <tr key={property.id} className={styles.fadeInRow}>
-                                                <td>{property.title}</td>
-                                                <td>{property.type}</td>
-                                                <td>{property.area} m2</td>
-                                                <td>{property.location}</td>
-                                                <td className={styles.img}><img src={property.images[0]} alt="" /></td>
-                                                <td>{property.bedrooms}</td>
-                                                <td>{property.bathrooms}</td>
-                                                <td className={styles.description}>{property.description}</td>
-                                                <td>{property.price.toLocaleString()}đ</td>
-                                                <td>{new Date(property.createdat).toLocaleDateString()}</td>
-                                                <td>
-                                                    <div className={styles.actionButtons}>
-                                                        <button className={styles.actionButton} title="Chỉnh sửa" onClick={() => handleEdit(property.id)}>
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                height="20px"
-                                                                viewBox="0 -960 960 960"
-                                                                width="20px"
-                                                                fill="#FFC107"
-                                                            >
-                                                                <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z" />
-                                                            </svg>
-                                                        </button>
-                                                        <button className={styles.actionButton} title="Xoá" onClick={() => openConfirmModal(property.id)}>
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                height="20px"
-                                                                viewBox="0 -960 960 960"
-                                                                width="20px"
-                                                                fill="#DC3545"
-                                                            >
-                                                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                            </button>
+                        )}
+                        {[...Array(totalPages)].map((_, index) => {
+                            const pageNumber = index + 1;
+                            return (
+                                <button
+                                    key={pageNumber}
+                                    className={`btn mx-1 ${pageNumber === page ? "btn-primary" : "btn-outline-primary"}`}
+                                    onClick={() => setPage(pageNumber)}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        })}
+                        {totalPages > 1 && (
+                            <button onClick={handleNextPage} className="btn btn-outline-primary mx-2" disabled={properties.length < limit}>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    height="24px" viewBox="0 -960 960 960"
+                                    width="24px" fill="#1f1f1f"
+                                >
+                                    <path
+                                        d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z"
+                                    />
+                                </svg>
+                            </button>
+                        )}
                     </div>
                 </div>
-                <div className="d-flex justify-content-center my-4">
-                    {totalPages > 1 && (
-                        <button onClick={handlePrevPage} className="btn btn-outline-primary mx-2" disabled={page === 1}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#1f1f1f"
-                            >
-                                <path
-                                    d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z"
-                                />
-                            </svg>
-
-                        </button>
-                    )}
-                    {[...Array(totalPages)].map((_, index) => {
-                        const pageNumber = index + 1;
-                        return (
-                            <button
-                                key={pageNumber}
-                                className={`btn mx-1 ${pageNumber === page ? "btn-primary" : "btn-outline-primary"}`}
-                                onClick={() => setPage(pageNumber)}
-                            >
-                                {pageNumber}
-                            </button>
-                        );
-                    })}
-                    {totalPages > 1 && (
-                        <button onClick={handleNextPage} className="btn btn-outline-primary mx-2" disabled={properties.length < limit}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px" viewBox="0 -960 960 960"
-                                width="24px" fill="#1f1f1f"
-                            >
-                                <path
-                                    d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z"
-                                />
-                            </svg>
-                        </button>
-                    )}
-                </div>
             </div>
+
             <ConfirmModal
                 show={showConfirm}
                 onClose={() => setShowConfirm(false)}
                 onConfirm={handleDelete}
                 message="Bạn có chắc chắn muốn xoá bất động sản này?"
             />
-
-=======
-                    </Link>
-                    <div className="col-md-4 col-lg-3 mb-3">
-                        <div className="card text-white bg-success">
-                            <div className="card-body">
-                                <h5 className="card-title">Tổng Người Dùng</h5>
-                                <p className="card-text display-6">
-                                    {loadingUsers ? '...' : users.length}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-4 col-lg-3 mb-3">
-                        <div className="card text-white bg-warning">
-                            <div className="card-body">
-                                <h5 className="card-title">Tổng Báo Cáo</h5>
-                                <p className="card-text display-6">
-                                    {loadingContacts ? '...' : contacts.length}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Table danh sách gần đây */}
-                <div className="card">
-                    <div className="card-header">
-                        <strong>Danh sách BĐS mới nhất</strong>
-                    </div>
-                    <div className="card-body table-responsive">
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Tiêu đề</th>
-                                    <th>Loại</th>
-                                    <th>Giá</th>
-                                    <th>Ngày tạo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loadingProperties ? (
-                                    <tr><td colSpan="4">Đang tải...</td></tr>
-                                ) : (
-                                    properties.slice(0, 5).map((property) => (
-                                        <tr key={property.id}>
-                                            <td>{property.title}</td>
-                                            <td>{property.type}</td>
-                                            <td>{property.price.toLocaleString()}đ</td>
-                                            <td>{new Date(property.createdat).toLocaleDateString()}</td>
-                                        </tr>
-                                    ))
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
->>>>>>> 68deeea599c96a3bc3cd9d4dd7162c845cbdf476
             <Footer />
         </>
-    );
+    )
 };
+
 
 export default AdminProperties;
