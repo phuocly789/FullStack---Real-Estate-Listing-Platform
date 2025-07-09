@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
-import { propertytype } from '@prisma/client'; // ✅ enum đúng tên
+import { Prisma, propertytype } from '@prisma/client'; // ✅ enum đúng tên
 
 @Injectable()
 export class PropertiesService {
@@ -19,52 +19,84 @@ export class PropertiesService {
   }
 
   async findAll(filters: {
-    priceMin?: number;
-    priceMax?: number;
-    areaMin?: number;
-    areaMax?: number;
+    title?: string;
     location?: string;
-    type?: string;
+    priceSort?: 'asc' | 'desc';
+    areaSort?: 'asc' | 'desc';
+    page?: number;
+    limit?: number;
   }) {
-    const allowedTypes = Object.values(propertytype);  // ['HOUSE', 'APARTMENT', ...]
+    const where: Prisma.propertyWhereInput = {
+      title: filters.title ? { contains: filters.title, mode: 'insensitive' } : undefined,
+      location: filters.location ? { contains: filters.location, mode: 'insensitive' } : undefined,
+    };
   
-    const typeFilter = allowedTypes.includes(filters.type as any)
-      ? (filters.type as propertytype)
-      : undefined;
+    const orderBy: Prisma.propertyOrderByWithRelationInput[] = [];
+    if (filters.priceSort) orderBy.push({ price: filters.priceSort });
+    if (filters.areaSort) orderBy.push({ area: filters.areaSort });
   
-    return this.prisma.property.findMany({
-      where: {
-        price: {
-          gte: filters.priceMin,
-          lte: filters.priceMax,
+    const skip = filters.page && filters.limit ? (filters.page - 1) * filters.limit : undefined;
+    const take = filters.limit;
+  
+    const [properties, totalCount] = await Promise.all([
+      this.prisma.property.findMany({
+        where,
+        orderBy,
+        skip,
+        take,
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          area: true,
+          location: true,
+          images: true,
+          type: true,
+          bedrooms: true,
+          description: true,
+          bathrooms: true,
+          createdat: true,
+          updatedat: true,
         },
-        area: {
-          gte: filters.areaMin,
-          lte: filters.areaMax,
-        },
-        location: filters.location ? { contains: filters.location } : undefined,
-        type: typeFilter,
-      },
-      include: {
-        User: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true,
-          },
-        },
-      },
-    });
+      }),
+      this.prisma.property.count({ where }),
+    ]);
+  
+    return { data: properties, totalCount };
   }
-
+  
+  
+  
+  
+  
   async findOne(id: number) {
     return this.prisma.property.findUnique({
       where: { id },
-      include: { User: { select: { id: true, name: true, email: true, phone: true } } },
+      select: {
+        id: true,
+        title: true,
+        price: true,
+        area: true,
+        location: true,
+        images: true,
+        type: true,
+        bedrooms: true,
+        description:true,
+        bathrooms: true,
+        userid:true,
+        longitude:true,
+        latitude:true,
+        createdat: true,
+        updatedat: true,
+      },
     });
   }
-
+  async countByUser(userId: number) {
+    return this.prisma.property.count({
+      where: { userid: userId },
+    });
+  }
+  
   async update(id: number, updatePropertyDto: UpdatePropertyDto) {
     return this.prisma.property.update({
       where: { id },

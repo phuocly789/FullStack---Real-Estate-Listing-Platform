@@ -1,14 +1,15 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/Navbar';
-import SearchBar from '../../components/SearchBar/SearchBar';
 import PropertyList from '../PropertyList';
 import banner from '../../assets/images/banner.png';
-import NewsFeed from '../../components/NewsFeed/NewsFeed';
 import LocationGrid from '../../components/LocationGrid/LocationGrid';
 import Footer from '../../components/Footer/Footer';
 import styles from './HomePage.module.css';
+import MainContent from '../../components/MainContent/MainContent';
+import { useGetPropertiesQuery } from '../../api/apiSlice';
 
 const Home = () => {
+    const { data, isLoading, isError } = useGetPropertiesQuery({}, { refetchOnMountOrArgChange: true });
     return (
         <>
             <Navbar />
@@ -16,9 +17,8 @@ const Home = () => {
                 {/* <SearchBar /> */}
                 <img src={banner} alt="banner" className="w-100" />
             </div>
-            <NewsFeed />
-            <PropertyList />
-            <LocationGrid />
+            <MainContent properties={data?.properties} isLoading={isLoading} isError={isError} />
+            <PropertyList properties={data?.properties} isLoading={isLoading} isError={isError} />
             <Footer />
         </>
     );

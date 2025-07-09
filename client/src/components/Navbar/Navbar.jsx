@@ -6,32 +6,18 @@ import { useGetProfileQuery } from '../../api/apiSlice';
 
 const Tabs = [
     { name: 'Trang Chủ', link: '/' },
-    { name: 'Tin Tức', link: '/news' },
+    { name: 'Bất Động Sản', link: '/collection' },
     { name: 'Liên Hệ', link: '/contact' },
+];
+const TabsAdmin = [
+    { name: 'Dashboard', link: '/admin' },
+    { name: 'Properties', link: '/admin/properties' },
+    { name: 'Users', link: '/admin/users' },
+    { name: 'Contacts', link: '/admin/contacts' },
 ];
 
 const Navbar = () => {
-    // const [user, setUser] = useState(null);
 
-    // useEffect(() => {
-    //     const fetchUser = async () => {
-    //         const token = localStorage.getItem('token');
-    //         if (token) {
-    //             try {
-    //                 // Giả sử bạn có API để lấy thông tin người dùng
-    //                 const res = await axios.get('http://localhost:3000/auth/me', {
-    //                     headers: { Authorization: `Bearer ${token}` },
-    //                 });
-    //                 setUser(res.data.user); // Giả sử API trả về đối tượng user với trường name
-    //             } catch (error) {
-    //                 console.error('Lỗi lấy thông tin người dùng:', error);
-    //                 localStorage.removeItem('token'); // Xóa token nếu không hợp lệ
-    //                 setUser(null);
-    //             }
-    //         }
-    //     };
-    //     fetchUser();
-    // }, []);
 
     const { data: user, isError } = useGetProfileQuery(undefined, {
         skip: !localStorage.getItem('token'),
@@ -41,7 +27,7 @@ const Navbar = () => {
     if (isError && localStorage.getItem('token')) {
         localStorage.removeItem('token');
         window.location.reload();
-      }
+    }
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -65,18 +51,36 @@ const Navbar = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        {Tabs.map((tab) => (
-                            <li key={tab.link} className={navItem.navItem}>
-                                <NavLink
-                                    to={tab.link}
-                                    className={({ isActive }) =>
-                                        `${navItem.navLink} ${isActive ? navItem.activeLink : ''}`
-                                    }
-                                >
-                                    {tab.name}
-                                </NavLink>
-                            </li>
-                        ))}
+                        {user?.role === 'ADMIN' ? (
+
+                            TabsAdmin.map((tab) => (
+                                <li key={tab.link} className={navItem.navItem}>
+                                    <NavLink
+                                        to={tab.link}
+                                        className={({ isActive }) =>
+                                            `${navItem.navLink} ${isActive ? navItem.activeLink : ''}`
+                                        }
+                                    >
+                                        {tab.name}
+                                    </NavLink>
+                                </li>
+                            ))
+
+                        ) : (
+
+                            Tabs.map((tab) => (
+                                <li key={tab.link} className={navItem.navItem}>
+                                    <NavLink
+                                        to={tab.link}
+                                        className={({ isActive }) =>
+                                            `${navItem.navLink} ${isActive ? navItem.activeLink : ''}`
+                                        }
+                                    >
+                                        {tab.name}
+                                    </NavLink>
+                                </li>
+                            ))
+                        )}
                     </ul>
 
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -94,9 +98,11 @@ const Navbar = () => {
                                             Đăng Xuất
                                         </button>
                                     </li>
-                                    <li className={navItem.dropdownItem}>
-                                        <a href="/profile" className={navItem.dropdownLink}>Hồ Sơ Cá Nhân</a>
-                                    </li>
+                                    {user?.role === 'USER' && (
+                                        <li className={navItem.dropdownItem}>
+                                            <a href="/profile" className={navItem.dropdownLink}>Hồ Sơ Cá Nhân</a>
+                                        </li>
+                                    )}
                                 </ul>
                             </li>
                         ) : (
@@ -106,12 +112,6 @@ const Navbar = () => {
                                 </a>
                             </li>
                         )}
-
-                        <li className={navItem.navItem}>
-                            <a className="btn btn-outline-secondary text-black" type="button" href="#">
-                                Đăng Tin
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </div>

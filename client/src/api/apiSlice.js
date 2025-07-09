@@ -1,4 +1,3 @@
-// src/api/apiSlice.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
@@ -32,6 +31,12 @@ export const apiSlice = createApi({
     getProfile: builder.query({
       query: () => '/users/profile',
     }),
+    getAllUsers: builder.query({
+      query: () => '/users',
+  }),
+    getUserById: builder.query({
+      query: (userid) => `/users/${userid}`,
+    }),
     updateProfile: builder.mutation({
       query: (user) => ({
         url: '/users/profile',
@@ -39,11 +44,32 @@ export const apiSlice = createApi({
         body: user,
       }),
     }),
+    changePassword: builder.mutation({
+      query: ({ oldPassword, newPassword }) => ({
+        url: '/users/change-password',
+        method: 'POST',
+        body: { oldPassword, newPassword },
+      }),
+    }),
+    deleteAccount: builder.mutation({
+      query: () => ({
+        url: '/users/delete',
+        method: 'DELETE',
+      }),
+    }),
+
     // Properties
+    getAllProperties: builder.query({
+      query: () => '/properties',
+    }),
     getProperties: builder.query({
       query: (params) => ({
         url: '/properties',
         params,
+      }),
+      transformResponse: (response) => ({
+        properties: response.data,
+        totalCount: response.totalCount,
       }),
     }),
     getProperty: builder.query({
@@ -69,6 +95,10 @@ export const apiSlice = createApi({
         method: 'DELETE',
       }),
     }),
+    getPropertyCountByUser: builder.query({
+      query: (userId) => `/properties/count/${userId}`,
+    }),
+
     // Contacts
     createContact: builder.mutation({
       query: (contact) => ({
@@ -93,6 +123,7 @@ export const apiSlice = createApi({
         method: 'DELETE',
       }),
     }),
+
     // Favorites
     addFavorite: builder.mutation({
       query: (propertyId) => ({
@@ -116,8 +147,12 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useGetProfileQuery,
+  useGetAllUsersQuery,
   useUpdateProfileMutation,
+  useChangePasswordMutation,
+  useDeleteAccountMutation,
   useGetPropertiesQuery,
+  useGetAllPropertiesQuery,
   useGetPropertyQuery,
   useCreatePropertyMutation,
   useUpdatePropertyMutation,
@@ -129,4 +164,6 @@ export const {
   useAddFavoriteMutation,
   useGetFavoritesQuery,
   useRemoveFavoriteMutation,
+  useGetUserByIdQuery,
+  useGetPropertyCountByUserQuery,
 } = apiSlice;

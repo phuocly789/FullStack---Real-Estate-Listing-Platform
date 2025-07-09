@@ -1,4 +1,3 @@
-// src/properties/properties.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Request } from '@nestjs/common';
 import { PropertiesService } from './properties.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
@@ -7,7 +6,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('properties')
 export class PropertiesController {
-  constructor(private readonly propertiesService: PropertiesService) {}
+  constructor(private readonly propertiesService: PropertiesService) { }
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -17,26 +16,31 @@ export class PropertiesController {
 
   @Get()
   async findAll(
-    @Query('priceMin') priceMin?: string,
-    @Query('priceMax') priceMax?: string,
-    @Query('areaMin') areaMin?: string,
-    @Query('areaMax') areaMax?: string,
+    @Query('title') title?: string,
     @Query('location') location?: string,
-    @Query('type') type?: string,
+    @Query('priceSort') priceSort?: 'asc' | 'desc',
+    @Query('areaSort') areaSort?: 'asc' | 'desc',
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
   ) {
     return this.propertiesService.findAll({
-      priceMin: priceMin ? parseFloat(priceMin) : undefined,
-      priceMax: priceMax ? parseFloat(priceMax) : undefined,
-      areaMin: areaMin ? parseFloat(areaMin) : undefined,
-      areaMax: areaMax ? parseFloat(areaMax) : undefined,
+      title,
       location,
-      type,
+      priceSort,
+      areaSort,
+      page: page ? parseInt(page) : undefined,
+      limit: limit ? parseInt(limit) : undefined,
     });
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.propertiesService.findOne(+id);
+  }
+  //count by id
+  @Get('/count/:userId')
+  async countByUser(@Param('userId') userId: string) {
+    return this.propertiesService.countByUser(+userId);
   }
 
   @UseGuards(JwtAuthGuard)

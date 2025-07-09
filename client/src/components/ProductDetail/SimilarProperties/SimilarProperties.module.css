@@ -20,11 +20,11 @@
     border-radius: 8px;
     text-align: center;
 }
-.grid {
+/* .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 24px;
-  }
+  } */
 .image {
     width: 100%;
     border-radius: 8px;

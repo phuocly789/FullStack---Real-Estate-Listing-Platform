@@ -1,4 +1,3 @@
-// src/users/users.controller.ts
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -27,14 +26,32 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(@Request() req, @Body() body: { oldPassword: string; newPassword: string }) {
+    return this.usersService.changePassword(req.user.userId, body.oldPassword, body.newPassword);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete')
+  async deleteAccount(@Request() req) {
+    return this.usersService.deleteAccount(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return this.usersService.findAll();
   }
 
+  // @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return this.usersService.findById(+id);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.deleteAccount(+id);
   }
 }

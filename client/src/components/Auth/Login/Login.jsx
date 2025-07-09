@@ -6,9 +6,11 @@ import Toast from '../../Toast/Toast';
 const Login = () => {
     const [login, { isLoading }] = useLoginMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
+    const [isSuccess, setIsSuccess] = useState(null);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
+        role: 'USER',
     });
 
     const handleChange = (e) => {
@@ -17,26 +19,43 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setToast({ message: '', type: '' });
+        setIsSuccess(null);
+
         try {
             const res = await login(formData).unwrap();
-            console.log('Phản hồi từ API:', res);
 
             const token = res.access_token;
             if (!token) throw new Error('Không tìm thấy token');
 
             localStorage.setItem('token', token);
 
+            setToast({ message: 'Đăng nhập thành công!', type: 'success' });
+            setIsSuccess(true);
+
+            // 👉 Decode token để lấy role
+            const decoded = JSON.parse(atob(token.split('.')[1]));
+            const role = decoded?.role;
+
             setTimeout(() => {
-                setToast({ message: 'Đăng nhập thành công!', type: 'success' });
-                window.location.href = '/';
+                if (role === 'ADMIN') {
+                    window.location.href = '/admin'; // hoặc trang admin tương ứng
+                } else {
+                    window.location.href = '/'; // Trang người dùng
+                }
             }, 1500);
         } catch (error) {
+            const errorMessage =
+                error?.data?.message || error?.error || 'Đăng nhập thất bại!';
+
             setToast({
-                message: error.response?.data?.message || 'Đăng nhập thất bại!',
+                message: Array.isArray(errorMessage) ? errorMessage[0] : errorMessage,
                 type: 'error',
             });
+            setIsSuccess(false);
         }
     };
+
 
     return (
         <div className={styles.formContainer}>
@@ -59,9 +78,35 @@ const Login = () => {
             <Toast
                 message={toast.message}
                 type={toast.type}
-                onClose={() => setToast({ message: '', type: '' })}
+                isSuccess={isSuccess}
+                onClose={() => {
+                    setToast({ message: '', type: '' });
+                    setIsSuccess(null);
+                }}
             />
             <form className={styles.form} onSubmit={handleSubmit}>
+                <div className={styles.roleSelect}>
+                    <label>
+                        <input
+                            type="radio"
+                            name="role"
+                            value="USER"
+                            checked={formData.role === 'USER'}
+                            onChange={handleChange}
+                        />
+                        Người dùng
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="role"
+                            value="ADMIN"
+                            checked={formData.role === 'ADMIN'}
+                            onChange={handleChange}
+                        />
+                        Quản trị viên
+                    </label>
+                </div>
                 <input
                     type="email"
                     name="email"

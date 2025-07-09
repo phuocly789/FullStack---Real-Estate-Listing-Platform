@@ -36,7 +36,7 @@ model Property {
   bedrooms    Int?
   bathrooms   Int?
   userid      Int    
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userid], references: [id], onDelete: Cascade)
   contacts    Contact[]
   favorites   Favorite[]
   createdAt   DateTime     @default(now())
@@ -49,8 +49,8 @@ model Contact {
   propertyid Int           
   message    String
   status     ContactStatus @default(PENDING)
-  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  property   Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user       User          @relation(fields: [userid], references: [id], onDelete: Cascade)
+  property   Property      @relation(fields: [propertyid], references: [id], onDelete: Cascade)
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
 }
@@ -60,7 +60,7 @@ model Favorite {
   userid     Int     
   propertyid Int     
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyid], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
 }
 
