@@ -7,7 +7,7 @@ const ContactInfo = ({ userid, propertyid }) => {
     const { data: user, isLoading: isUserLoading, isError: isUserError } = useGetUserByIdQuery(userid);
     const { data: currentUser } = useGetProfileQuery(); // Lấy thông tin người dùng hiện tại
     const { data: count } = useGetPropertyCountByUserQuery(userid);
-    const { data: contacts, isLoading: isContactsLoading } = useGetContactsQuery({
+    const { data: contacts, isLoading: isContactsLoading, refetch } = useGetContactsQuery({
         userid: currentUser?.id,
         propertyid,
     }); // Lấy liên hệ của người dùng hiện tại
@@ -44,6 +44,7 @@ const ContactInfo = ({ userid, propertyid }) => {
             }).unwrap();
             setMessage('');
             setToast({ message: 'Đã gửi yêu cầu liên hệ!', type: 'success' });
+            refetch();
         } catch (error) {
             console.error('Lỗi gửi liên hệ:', error);
             setToast({ message: error?.data?.message || 'Lỗi khi gửi liên hệ!', type: 'error' });
@@ -96,35 +97,51 @@ const ContactInfo = ({ userid, propertyid }) => {
                 </form>
             </div>
             <div className="row">
-                <h4>Lịch sử liên hệ của bạn</h4>
+                <h4 className={styles.ContactTitle}>Lịch sử liên hệ của bạn: </h4>
                 {contacts && contacts.length > 0 ? (
                     <ul className={styles.contactList}>
                         {contacts.map((contact) => (
-                            <li key={contact.id} className={styles.contactItem}>
-                                <div className={styles.contactMessage}>
-                                    <strong>Tin nhắn:</strong> {contact.message}
-                                </div>
-                                <div className={styles.contactStatus}>
-                                    <strong>Trạng thái:</strong>{' '}
-                                    {contact.status === 'PENDING' ? 'CLOSED' : 'RESPONED'}
-                                </div>
-                                {contact.replyMessage && (
-                                    <div className={styles.contactReply}>
-                                        <strong>Phản hồi:</strong> {contact.replyMessage}
+                            contact.propertyid == propertyid && (
+                                <li key={contact.id} className={styles.contactItem}>
+                                    <div className={styles.contactMessage}>
+                                        <strong>Tin nhắn:</strong> {contact.message}
                                     </div>
-                                )}
-                                <div className={styles.contactDate}>
-                                    <strong>Gửi lúc:</strong>{' '}
-                                    {new Intl.DateTimeFormat('vi-VN', {
-                                        day: '2-digit',
-                                        month: '2-digit',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    }).format(new Date(contact.createdat))}
-                                </div>
-                            </li>
-                        ))}
+                                    <div className={styles.contactStatus}>
+                                        <strong>Trạng thái:</strong>{' '}
+                                        <label className={
+                                            contact.status === 'PENDING'
+                                                ? styles.statusPending
+                                                : contact.status === 'RESPONDED'
+                                                    ? styles.statusResponded
+                                                    : styles.statusClosed
+                                        }>
+                                            {contact.status}
+                                        </label>
+                                    </div>
+                                    {contact.replyMessage && (
+                                        <div className={styles.contactReply}>
+                                            <strong>Phản hồi:</strong> {contact.replyMessage}
+                                        </div>
+                                    )}
+                                    <div className={styles.contactDate}>
+                                        <strong>Gửi lúc:</strong>{' '}
+                                        {new Intl.DateTimeFormat('vi-VN', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        }).format(new Date(contact.createdat))}
+                                    </div>
+                                    {contact.replymessage != null && (
+                                        <div className={styles.contactStatus}>
+                                            <i><u>Phản hồi từ admin:</u></i>{' '}
+                                            {contact.replymessage}
+                                        </div>
+                                    )}
+                                    <hr />
+                                </li>
+                            )))}
                     </ul>
                 ) : (
                     <p>Chưa có liên hệ nào được gửi.</p>

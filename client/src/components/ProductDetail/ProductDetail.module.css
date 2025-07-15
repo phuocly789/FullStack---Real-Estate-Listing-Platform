@@ -8,9 +8,21 @@
 }
 
 .heartIcon {
-  font-size: 20px;
+  background: none;
+  border: none;
   cursor: pointer;
-  transition: color 0.2s ease;
+  font-size: 24px;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.heartIcon:hover {
+  color: #e44d4d;
+  background: none;
+}
+
+.favoriteActive {
+  color: #e44d4d;
 }
 
 .titleRow {

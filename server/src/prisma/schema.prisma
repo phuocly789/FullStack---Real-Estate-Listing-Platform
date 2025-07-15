@@ -48,7 +48,7 @@ model Contact {
   userid     Int    
   propertyid Int           
   message    String
-  replyMessage  String?    
+  replymessage  String?    
   status     ContactStatus @default(PENDING)
   user       User          @relation(fields: [userid], references: [id], onDelete: Cascade)
   property   Property      @relation(fields: [propertyid], references: [id], onDelete: Cascade)

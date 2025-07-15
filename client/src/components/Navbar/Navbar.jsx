@@ -7,7 +7,6 @@ import { useGetProfileQuery } from '../../api/apiSlice';
 const Tabs = [
     { name: 'Trang Chủ', link: '/' },
     { name: 'Bất Động Sản', link: '/collection' },
-    { name: 'Liên Hệ', link: '/contact' },
 ];
 const TabsAdmin = [
     { name: 'Dashboard', link: '/admin' },
@@ -101,6 +100,11 @@ const Navbar = () => {
                                     {user?.role === 'USER' && (
                                         <li className={navItem.dropdownItem}>
                                             <a href="/profile" className={navItem.dropdownLink}>Hồ Sơ Cá Nhân</a>
+                                        </li>
+                                    )}
+                                    {user?.role === 'USER' && (
+                                        <li className={navItem.dropdownItem}>
+                                            <a href="/favorites" className={navItem.dropdownLink}>Danh Sách Yêu Thích</a>
                                         </li>
                                     )}
                                 </ul>

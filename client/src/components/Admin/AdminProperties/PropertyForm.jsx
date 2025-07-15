@@ -57,7 +57,7 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                 newErrors[`images-${i}`] = 'URL hình ảnh không hợp lệ';
             }
         });
-
+        console.log('Validation errors:', newErrors);
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -72,7 +72,11 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
             area: parseFloat(form.area),
             bedrooms: parseInt(form.bedrooms),
             bathrooms: parseInt(form.bathrooms),
+            longitude: parseFloat(form.longitude) || 0, // Ép kiểu thành số
+            latitude: parseFloat(form.latitude) || 0,   // Ép kiểu thành số
+            images: form.images.filter(img => img.trim() !== ''),
         };
+        console.log('Dữ liệu gửi đi:', parsedForm);
         onSubmit(parsedForm);
     };
 
@@ -88,17 +92,17 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                 <div className="col-md-6">
                     <label className="form-label">Giá</label>
                     <input type="number" className={`form-control ${styles.input}`} name="price" value={form.price} onChange={handleChange} required />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.price && <div className="text-danger">{errors.price}</div>}
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Diện tích</label>
                     <input type="number" className={`form-control ${styles.input}`} name="area" value={form.area} onChange={handleChange} required />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.area && <div className="text-danger">{errors.area}</div>}
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Vị trí</label>
                     <input type="text" className={`form-control ${styles.input}`} name="location" value={form.location} onChange={handleChange} required />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.location && <div className="text-danger">{errors.location}</div>}
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Kinh độ</label>
@@ -110,7 +114,7 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.longitude && <div className="text-danger">{errors.longitude}</div>}
                 </div>
                 <div className="col-md-6">
                     <label className="form-label">Vĩ độ</label>
@@ -122,7 +126,7 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                         onChange={handleChange}
                         required
                     />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.latitude && <div className="text-danger">{errors.latitude}</div>}
 
                 </div>
 
@@ -137,19 +141,19 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                 <div className="col-md-3">
                     <label className="form-label">Phòng ngủ</label>
                     <input type="number" className={`form-control ${styles.input}`} name="bedrooms" value={form.bedrooms} onChange={handleChange} required />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.bedrooms && <div className="text-danger">{errors.bedrooms}</div>}
 
                 </div>
                 <div className="col-md-3">
                     <label className="form-label">Phòng tắm</label>
                     <input type="number" className={`form-control ${styles.input}`} name="bathrooms" value={form.bathrooms} onChange={handleChange} required />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.bathrooms && <div className="text-danger">{errors.bathrooms}</div>}
 
                 </div>
                 <div className="col-12">
                     <label className="form-label">Mô tả</label>
                     <textarea className={`form-control ${styles.input}`} name="description" value={form.description} onChange={handleChange} rows={3} />
-                    {errors.title && <div className="text-danger">{errors.title}</div>}
+                    {errors.description && <div className="text-danger">{errors.description}</div>}
                 </div>
 
                 <div className={`col-12 `}>
@@ -163,7 +167,7 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                                 onChange={(e) => handleImageChange(index, e.target.value)}
                                 required
                             />
-                            {errors.title && <div className="text-danger">{errors.title}</div>}
+                            {errors.img && <div className="text-danger">{errors.img}</div>}
 
                             {form.images.length > 1 && (
                                 <button type="button" className="btn btn-danger btn-sm" onClick={() => removeImageField(index)}>X</button>

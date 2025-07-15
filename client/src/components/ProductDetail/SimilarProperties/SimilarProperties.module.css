@@ -1,5 +1,6 @@
 .similar {
     margin-bottom: 20px;
+    margin-top: 40px;
 }
 
 .heading {
@@ -20,6 +21,7 @@
     border-radius: 8px;
     text-align: center;
 }
+
 /* .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -28,4 +30,22 @@
 .image {
     width: 100%;
     border-radius: 8px;
+}
+
+.heartIcon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.heartIcon:hover {
+    color: #e44d4d;
+    background:none;
+}
+
+.favoriteActive {
+    color: #e44d4d;
 }

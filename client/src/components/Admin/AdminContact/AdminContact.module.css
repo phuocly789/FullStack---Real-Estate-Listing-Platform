@@ -9,15 +9,53 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.btn-primary,
-.btn-danger {
-    transition: background-color 0.2s;
+.container {
+    padding-bottom: 60px;
+    /* width: 1800px; */
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
+.actionButton {
+    min-width: 80px;
+    font-size: 0.9rem;
 }
 
-.btn-danger:hover {
-    background-color: #c82333;
+.statusPending {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.statusResponded {
+    background-color: #28a745;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.statusClosed {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* Dòng màu khác nhau cho pending và responded */
+.pendingRow {
+    background-color: #fffdf5;
+}
+
+.respondedRow {
+    background-color: #f0fff4;
+}
+
+/* Responsive table (nếu cần thêm hiệu ứng) */
+.table-responsive {
+    overflow-x: auto;
 }

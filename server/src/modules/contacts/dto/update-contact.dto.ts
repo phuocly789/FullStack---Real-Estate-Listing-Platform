@@ -4,9 +4,9 @@ import { IsString, IsOptional, IsIn } from 'class-validator';
 export class UpdateContactDto {
   @IsString()
   @IsOptional()
-  replyMessage?: string;
+  replymessage?: string;
 
-  @IsIn(['PENDING', 'REPLIED'])
+  @IsIn(['PENDING', 'RESPONDED', 'CLOSED'])
   @IsOptional()
   status?: string;
 }

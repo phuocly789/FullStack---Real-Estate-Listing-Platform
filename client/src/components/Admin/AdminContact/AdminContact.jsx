@@ -4,17 +4,17 @@ import { skipToken } from '@reduxjs/toolkit/query/react';
 import Navbar from '../../Navbar/Navbar';
 import Footer from '../../Footer/Footer';
 import { Modal, Button, Form } from 'react-bootstrap';
-import styles from './AdminContact.module.css'; // File CSS đã sửa
+import styles from './AdminContact.module.css';
 import Toast from '../../Toast/Toast';
 
 const AdminContact = () => {
     const { data: profile = {} } = useGetProfileQuery();
-    const { data: contacts = [], isLoading: loadingContacts } = useGetContactsQuery(
+    const { data: contacts = [], isLoading: loadingContacts, refetch } = useGetContactsQuery(
         profile ? { userId: profile.userId, role: profile.role } : skipToken
     );
     const [updateContact, { isLoading: replying }] = useUpdateContactMutation();
     const [deleteContact, { isLoading: deleting }] = useDeleteContactMutation();
-    const [toast, setToast] = useState({ message: '', type: '' }); // Sửa toast thành object
+    const [toast, setToast] = useState({ message: '', type: '' });
     const [isSuccess, setIsSuccess] = useState(false);
 
     // State cho modal trả lời
@@ -42,6 +42,7 @@ const AdminContact = () => {
     // Mở modal và lưu thông tin contact
     const handleOpenModal = (contact) => {
         setSelectedContact(contact);
+        setReplyMessage(contact.replymessage || ''); // Khởi tạo với replymessage hiện tại
         setShowModal(true);
     };
 
@@ -49,7 +50,8 @@ const AdminContact = () => {
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedContact(null);
-        setReplyMessage('');
+        setReplyMessage(selectedContact?.replymessage || '');
+        refetch();
     };
 
     // Gửi phản hồi
@@ -63,10 +65,10 @@ const AdminContact = () => {
         try {
             await updateContact({
                 id: selectedContact.id,
-                replyMessage,
-                status: 'PENDING',
+                replymessage: replyMessage,
+                status: 'RESPONDED',
             }).unwrap();
-            handleCloseModal(); // Sửa lỗi chính tả
+            handleCloseModal();
             setToast({ message: 'Phản hồi đã được gửi!', type: 'success' });
             setIsSuccess(true);
         } catch (error) {
@@ -78,13 +80,24 @@ const AdminContact = () => {
 
     // Xóa liên hệ
     const handleDelete = async (id) => {
+        console.log('Deleting contact with ID:', id, 'Type:', typeof id);
+        if (!Number.isInteger(Number(id))) {
+            setToast({ message: 'ID liên hệ không hợp lệ!', type: 'error' });
+            setIsSuccess(false);
+            return;
+        }
         try {
-            await deleteContact({ id }).unwrap();
+            const response = await deleteContact(Number(id)).unwrap();
+            console.log('Delete API Response:', response);
             setToast({ message: 'Đã xóa liên hệ!', type: 'success' });
             setIsSuccess(true);
+            refetch();
         } catch (error) {
-            console.error('Lỗi xóa liên hệ:', error);
-            setToast({ message: error?.data?.message || 'Lỗi khi xóa liên hệ!', type: 'error' });
+            console.error('Delete API Error:', error);
+            setToast({
+                message: error?.data?.message || 'Lỗi khi xóa liên hệ! Vui lòng thử lại.',
+                type: 'error',
+            });
             setIsSuccess(false);
         }
     };
@@ -128,6 +141,7 @@ const AdminContact = () => {
                                     <th>Tên Người Gửi</th>
                                     <th>Email</th>
                                     <th>Tin Nhắn</th>
+                                    <th>Phản Hồi</th>
                                     <th>Bất Động Sản</th>
                                     <th>Trạng Thái</th>
                                     <th>Ngày Gửi</th>
@@ -137,27 +151,50 @@ const AdminContact = () => {
                             <tbody>
                                 {loadingContacts ? (
                                     <tr>
-                                        <td colSpan="7" className="text-center">
+                                        <td colSpan="8" className="text-center">
                                             Đang tải...
                                         </td>
                                     </tr>
                                 ) : contacts.length === 0 ? (
                                     <tr>
-                                        <td colSpan="7" className="text-center">
+                                        <td colSpan="8" className="text-center">
                                             Không có yêu cầu liên hệ nào.
                                         </td>
                                     </tr>
                                 ) : (
                                     contacts.map((contact) => (
-                                        <tr key={contact.id}>
+                                        <tr
+                                            key={contact.id}
+                                            className={
+                                                contact.status === 'PENDING'
+                                                    ? styles.pendingRow
+                                                    : styles.respondedRow
+                                            }
+                                        >
                                             <td>{contact.User?.name || 'N/A'}</td>
                                             <td>{contact.User?.email || 'N/A'}</td>
                                             <td>{contact.message}</td>
+                                            <td>{contact.replymessage || 'Chưa có phản hồi'}</td>
                                             <td>{contact.property?.title || 'N/A'}</td>
-                                            <td>{contact.status}</td>
-                                            <td>{formatDate(contact.createdAt)}</td> {/* Sửa createdat thành createdAt */}
                                             <td>
-                                                {contact.status !== 'REPLIED' && (
+                                                <span
+                                                    className={
+                                                        contact.status === 'PENDING'
+                                                            ? styles.statusPending
+                                                            : contact.status === 'RESPONDED'
+                                                                ? styles.statusResponded
+                                                                : styles.statusClosed
+                                                    }
+                                                >
+                                                    {contact.status}
+                                                </span>
+                                                {/* {contact.status === 'RESPONDED' & contact.updatedat != contact.createdat && (
+                                                    <div>Đã Chỉnh Sửa</div>
+                                                )} */}
+                                            </td>
+                                            <td>{formatDate(contact.createdat)}</td>
+                                            <td>
+                                                {contact.status === 'PENDING' ? (
                                                     <Button
                                                         variant="primary"
                                                         size="sm"
@@ -165,6 +202,15 @@ const AdminContact = () => {
                                                         className={styles.actionButton}
                                                     >
                                                         Trả lời
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="primary"
+                                                        size="sm"
+                                                        onClick={() => handleOpenModal(contact)}
+                                                        className={styles.actionButton}
+                                                    >
+                                                        Chỉnh sửa
                                                     </Button>
                                                 )}
                                                 <Button

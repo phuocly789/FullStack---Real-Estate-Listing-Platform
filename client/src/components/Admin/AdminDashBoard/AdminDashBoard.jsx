@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useGetAllUsersQuery, useGetPropertiesQuery, useGetContactsQuery, useGetProfileQuery } from '../../../api/apiSlice';
 import { Link } from 'react-router-dom';
-
+import styles from './AdminDashBoard.module.css'
 const AdminDashBoard = () => {
     const { data: users = [], isLoading: loadingUsers } = useGetAllUsersQuery();
     const { data: propertiesJson = [], isLoading: loadingProperties } = useGetPropertiesQuery({}, { refetchOnMountOrArgChange: true });
@@ -17,10 +17,10 @@ const AdminDashBoard = () => {
             <h2 className="mb-4">Trang Quản Trị</h2>
 
             {/* Cards thống kê */}
-            <div className="row mb-4">
-                <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
+            <div className={`row mb-4` }>
+                <Link to="/admin_properties" className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-primary">
-                        <div className="card-body">
+                        <div className={`card-body `}>
                             <h5 className="card-title">Tổng BĐS</h5>
                             <p className="card-text display-6">
                                 {loadingProperties ? '...' : properties.length}
@@ -28,26 +28,26 @@ const AdminDashBoard = () => {
                         </div>
                     </div>
                 </Link>
-                <div className="col-md-4 col-lg-3 mb-3">
+                <Link to={"/admin_users"} className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-success">
-                        <div className="card-body">
+                        <div className={`card-body `}>
                             <h5 className="card-title">Tổng Người Dùng</h5>
                             <p className="card-text display-6">
                                 {loadingUsers ? '...' : users.length}
                             </p>
                         </div>
                     </div>
-                </div>
-                <div className="col-md-4 col-lg-3 mb-3">
+                </Link>
+                <Link to={"/admin_contacts"} className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-warning">
-                        <div className="card-body">
+                        <div className={`card-body`}>
                             <h5 className="card-title">Tổng Báo Cáo</h5>
                             <p className="card-text display-6">
                                 {loadingContacts ? '...' : contacts.length}
                             </p>
                         </div>
                     </div>
-                </div>
+                </Link>
             </div>
 
             {/* Table danh sách gần đây */}
@@ -148,8 +148,6 @@ const AdminDashBoard = () => {
                     </table>
                 </div>
             </div>
-=======
->>>>>>> 68deeea599c96a3bc3cd9d4dd7162c845cbdf476
         </div>
     );
 };

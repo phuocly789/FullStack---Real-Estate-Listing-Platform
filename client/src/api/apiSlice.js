@@ -133,20 +133,23 @@ export const apiSlice = createApi({
     }),
 
     // Favorites
-    addFavorite: builder.mutation({
+     addFavorite: builder.mutation({
       query: (propertyId) => ({
         url: `/favorites/${propertyId}`,
         method: 'POST',
       }),
+      invalidatesTags: ['Favorites'], // Invalidate Favorites khi thêm
     }),
     getFavorites: builder.query({
       query: () => '/favorites',
+      providesTags: ['Favorites'], // Cung cấp tag Favorites
     }),
     removeFavorite: builder.mutation({
       query: (propertyId) => ({
         url: `/favorites/${propertyId}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Favorites'], // Invalidate Favorites khi xóa
     }),
   }),
 });

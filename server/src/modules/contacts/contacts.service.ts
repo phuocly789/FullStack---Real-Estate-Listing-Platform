@@ -4,11 +4,11 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { CreateContactDto } from './dto/create-contact.dto';
 import { UpdateContactDto } from './dto/update-contact.dto';
 import { contactstatus } from '@prisma/client';
-// import { UpdateContactDto } from './dto/update-contact.dto';
+// import { UpdateContactDto } from './dto/zupdate-contact.dto';
 
 @Injectable()
 export class ContactsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(userId: number, createContactDto: CreateContactDto) {
     try {
@@ -47,50 +47,55 @@ export class ContactsService {
       });
     }
     return this.prisma.contact.findMany({
-        where: { userid: userId },
+      where: { userid: userId },
       include: { User: true, property: true },
     });
   }
 
-  async update(id: number, updateContactDto: UpdateContactDto) {
-    try {
-      if (!Number.isInteger(id)) {
-        throw new BadRequestException('ID liên hệ không hợp lệ');
-      }
-
-      // Kiểm tra liên hệ tồn tại
-      const contact = await this.prisma.contact.findUnique({ where: { id } });
-      if (!contact) {
-        throw new NotFoundException(`Liên hệ với ID ${id} không tồn tại`);
-      }
-
-      const data: any = {
-        updatedAt: new Date(),
-      };
-
-      if (updateContactDto.replyMessage) {
-        data.replyMessage = updateContactDto.replyMessage;
-      }
-
-      if (updateContactDto.status) {
-        if (!Object.values(contactstatus).includes(updateContactDto.status as contactstatus)) {
-          throw new BadRequestException(`Trạng thái ${updateContactDto.status} không hợp lệ`);
-        }
-        data.status = updateContactDto.status as contactstatus;
-      }
-
-      return await this.prisma.contact.update({
-        where: { id },
-        data,
-      });
-    } catch (error) {
-      if (error instanceof NotFoundException || error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new BadRequestException('Lỗi khi cập nhật liên hệ');
+  // src/contacts/contacts.service.ts
+async update(id: number, updateContactDto: UpdateContactDto) {
+  console.log('Received update data:', { id, updateContactDto });
+  try {
+    if (!Number.isInteger(id)) {
+      throw new BadRequestException('ID liên hệ không hợp lệ');
     }
+
+    const contact = await this.prisma.contact.findUnique({ where: { id } });
+    if (!contact) {
+      throw new NotFoundException(`Liên hệ với ID ${id} không tồn tại`);
+    }
+
+    const data: any = {
+      updatedat: new Date(),
+    };
+
+    if (updateContactDto.replymessage) {
+      data.replymessage = updateContactDto.replymessage;
+    }
+
+    if (updateContactDto.status) {
+      console.log('Validating status:', updateContactDto.status);
+      if (!Object.values(contactstatus).includes(updateContactDto.status as contactstatus)) {
+        throw new BadRequestException(`Trạng thái ${updateContactDto.status} không hợp lệ`);
+      }
+      data.status = updateContactDto.status as contactstatus;
+    }
+
+    const updatedContact = await this.prisma.contact.update({
+      where: { id },
+      data,
+    });
+    console.log('Updated contact:', updatedContact);
+    return updatedContact;
+  } catch (error) {
+    console.error('Error updating contact:', error); // Ghi lại lỗi gốc
+    if (error instanceof NotFoundException || error instanceof BadRequestException) {
+      throw error;
+    }
+    throw new BadRequestException(error.message || 'Lỗi khi cập nhật liên hệ');
   }
-  
+}
+
 
   async remove(id: number) {
     return this.prisma.contact.delete({ where: { id } });

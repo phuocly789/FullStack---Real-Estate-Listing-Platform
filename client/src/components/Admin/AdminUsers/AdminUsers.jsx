@@ -63,6 +63,18 @@ const AdminUsers = () => {
                         setIsSuccess(null);
                     }}
                 />
+                <div className="row mb-4">
+                    <div className="col-md-4 col-lg-3 mb-3">
+                        <div className={`card text-white bg-warning ${styles.card}`}>
+                            <div className="card-body">
+                                <h5 className="card-title">Tổng Yêu Cầu Liên Hệ</h5>
+                                <p className="card-text display-6">
+                                    {loadingUsers ? '...' : users.length}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {/* Cards thống kê */}
                 <div className="row mb-4">
 

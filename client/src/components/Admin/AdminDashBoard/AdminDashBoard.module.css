@@ -5,3 +5,10 @@
     padding: 20px 16px;
     min-height: 50vh;
 }
+
+
+
+.linkCard {
+    text-decoration: none !important;
+    color: inherit;
+}

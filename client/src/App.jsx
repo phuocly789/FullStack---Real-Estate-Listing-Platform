@@ -13,6 +13,7 @@ import AdminUsers from './components/Admin/AdminUsers/AdminUsers';
 import AdminContact from './components/Admin/AdminContact/AdminContact';
 import EditProperty from './components/Admin/AdminProperties/EditProperty';
 import AddProperty from './components/Admin/AdminProperties/AddProperty';
+import FavoritePage from './pages/FavoritePage/FavoritePage';
 
 
 const App = () => (
@@ -29,7 +30,10 @@ const App = () => (
         path="/profile"
         element={<ProtectedRoute element={<ProfilePage />} allowedRoles={['USER']} />}
       />
-
+      <Route
+        path="/favorites"
+        element={<ProtectedRoute element={<FavoritePage />} allowedRoles={['USER']} />}
+      />
       {/* ADMIN chỉ được truy cập */}
       <Route
         path="/admin"

@@ -106,3 +106,39 @@ form {
     font-size: 16px;
     margin-top: 20px;
 }
+
+.contactItem {
+    list-style: none;
+}
+
+.ContactTitle {
+    font-size: 22px;
+    border-bottom: 1px dashed black
+}
+
+.statusPending {
+    background-color: #ffc107;
+    color: #212529;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.statusResponded {
+    background-color: #28a745;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.statusClosed {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}

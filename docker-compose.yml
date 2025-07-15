@@ -1,38 +1,18 @@
-version: '3.8'
 services:
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
-    environment:
-      - VITE_API_URL=http://server:3000
-      - NODE_ENV=production
+      - "3001:80"  # map Nginx port 80 -> localhost:3001
     depends_on:
       - server
+    restart: unless-stopped
+
   server:
     build:
       context: ./server
-      dockerfile: Dockerfile
     ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://user:password@db:5432/real_estate
-      - JWT_SECRET=your_jwt_secret
-      - GOOGLE_MAPS_API_KEY=your_api_key
-    depends_on:
-      - db
-  db:
-    image: postgres:15
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=real_estate
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-volumes:
-  postgres_data:
+      - "3000:3000"
+    env_file:
+      - ./server/.env
+    restart: unless-stopped
