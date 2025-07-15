@@ -14,7 +14,7 @@ Chúng tôi tự hào sử dụng một chồng công nghệ hiện đại và m
 | Thành phần          | Công nghệ                          | Mô tả                                                |
 | :------------------ | :--------------------------------- | :--------------------------------------------------- |
 | **Front-end** | React + Next.js                    | Giao diện người dùng động, hiệu suất cao với **App Router** |
-| **Quản lý trạng thái** | Redux Toolkit + RTK Query          | Quản lý trạng thái và tương tác API hiệu quả             |
+| **Quản lý trạng thái** | RTK Query          | Quản lý trạng thái và tương tác API hiệu quả             |
 | **Styling** | Tailwind CSS                       | Thiết kế UI nhanh chóng, dễ dàng tùy biến và responsive |
 | **Back-end** | NestJS                             | Kiến trúc backend mạnh mẽ, module rõ ràng và dễ bảo trì |
 | **ORM** | Prisma                             | Công cụ ORM hiện đại, giúp tương tác với database linh hoạt |
@@ -77,8 +77,6 @@ Bạn có hai lựa chọn để chạy dự án: sử dụng **Docker** (khuy�
 
 * **Node.js** (phiên bản 16 trở lên được khuyến nghị)
 * **npm** (thường đi kèm với Node.js) hoặc **Yarn**
-* **Python** (phiên bản 3.x - nếu dự án có tích hợp)
-* **Redis** (server - nếu sử dụng trong backend)
 * **PostgreSQL** (server - nếu không dùng Supabase là DB chính)
 * **Prisma CLI**: Cài đặt toàn cục bằng lệnh: `npm install -g prisma`
 
@@ -93,13 +91,9 @@ Bạn cần tạo các file `.env` chứa các thông tin cấu hình quan trọ
 
     ```env
     DATABASE_URL="postgresql://postgres.aapedgzmjpesntappypa:phuocly789@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require&connection_limit=1"
-    JWT_SECRET="phuoclyminh789@gmail.com" # KHUYẾN NGHỊ: Thay đổi bằng một chuỗi bí mật mạnh hơn cho production
+    JWT_SECRET="phuoclyminh789@gmail.com"
     SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
     SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTU5MTIzOSwiZXhwIjoyMDY3MTY3MjM5fQ.tFrKUuU1DxFpxK8GRzieULrFOybKze2moO-dyGCjtSc"
-    # Các biến khác nếu có (ví dụ: UPLOAD_FOLDER, RESULT_FOLDER, REDIS_URL nếu dùng Redis)
-    # UPLOAD_FOLDER=./uploads
-    # RESULT_FOLDER=./results
-    # REDIS_URL="redis://localhost:6379/0"
     ```
 
 * **`frontend/.env` (hoặc `.env.local` nếu dùng Next.js)**:
@@ -107,16 +101,9 @@ Bạn cần tạo các file `.env` chứa các thông tin cấu hình quan trọ
 
     * **Nếu bạn dùng Vite (tiền tố `VITE_`):**
         ```env
-        VITE_API_URL="http://localhost:5000" # Đảm bảo khớp với cổng API của backend
+        VITE_API_URL="http://localhost:3000"
         VITE_SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
         VITE_SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1OTEyMzksImV4cCI6MjA2NzE2NzIzOX0.QztdDoBzydweEG2bkRLncdINmpJE3r3fvnIZp1dQf_w"
-        ```
-
-    * **Nếu bạn dùng Next.js (tiền tố `NEXT_PUBLIC_`):**
-        ```env
-        NEXT_PUBLIC_API_URL="http://localhost:5000" # Đảm bảo khớp với cổng API của backend
-        NEXT_PUBLIC_SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
-        NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1OTEyMzksImV4cCI6MjA2NzE2NzIzOX0.QztdDoBzydweEG2bkRLncdINmpJE3r3fvnIZp1dQf_w"
         ```
     **Lưu ý quan trọng:** Hãy chọn **một trong hai** cấu hình frontend trên, tùy thuộc vào framework bạn đang sử dụng cho giao diện người dùng.
 
@@ -130,12 +117,10 @@ Phương án này tận dụng Docker để tạo môi trường chạy ứng d�
     Mở terminal hoặc Command Prompt và điều hướng đến thư mục chứa file `docker-compose.yml`.
 
     ```bash
-    cd <tên_thư_mục_dự_án>
+    cd Fullstack-Real_Estate_Listing_Platform
     ```
 
 2.  **Áp dụng Prisma Migrations lên Supabase Database**:
-    Vì bạn đang sử dụng **Supabase PostgreSQL** làm cơ sở dữ liệu chính, bạn chỉ cần đảm bảo Prisma schema được đồng bộ với database từ xa.
-
     ```bash
     docker-compose up -d server # Khởi chạy dịch vụ backend ở chế độ nền để có thể chạy lệnh Prisma
     docker-compose exec server npx prisma migrate deploy # Áp dụng các migration từ bên trong container 'server'
@@ -167,7 +152,7 @@ Nếu bạn muốn kiểm soát từng thành phần riêng lẻ hoặc không m
 
     ```bash
     cd backend/
-    npm install # hoặc yarn install
+    npm install 
     ```
 
 2.  **Áp dụng Prisma Migrations (Backend)**:
@@ -182,9 +167,9 @@ Nếu bạn muốn kiểm soát từng thành phần riêng lẻ hoặc không m
     Từ thư mục **`backend/`**:
 
     ```bash
-    npm run start:dev # Hoặc lệnh khởi động server development của bạn
+    npm run start:dev 
     ```
-    Backend API sẽ bắt đầu lắng nghe tại `http://localhost:5000/api`.
+    Backend API sẽ bắt đầu lắng nghe tại `http://localhost:3000/api`.
 
 4.  **Cài đặt các dependency cho Frontend**:
     Mở một terminal **mới**, điều hướng đến thư mục **`frontend/`** và cài đặt các gói Node.js:
@@ -200,7 +185,7 @@ Nếu bạn muốn kiểm soát từng thành phần riêng lẻ hoặc không m
     ```bash
     npm run dev # Hoặc lệnh khởi động dev server của bạn
     ```
-    Frontend sẽ được truy cập tại `http://localhost:3000`.
+    Frontend sẽ được truy cập tại `http://localhost:5173`.
 
 ---
 
@@ -212,3 +197,4 @@ Nếu bạn muốn kiểm soát từng thành phần riêng lẻ hoặc không m
 
 ```bash
 docker-compose down
+    ```
