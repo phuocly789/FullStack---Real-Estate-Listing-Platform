@@ -1,68 +1,70 @@
-# 🏘️ Real Estate Listing Platform
+# 🏘️ Nền tảng Đăng tin Bất động sản
 
-- Người Thực Hiện : **Lý Minh Phước**
-- Link Deploy : [Hãy điền link deploy của bạn vào đây nếu có]
+**Người Thực Hiện**: Lý Minh Phước
+**Link Deploy**: [Hãy điền link deploy của bạn vào đây nếu có]
 
-Nền tảng Đăng tin Bất động sản Full Stack cho phép người dùng đăng, tìm kiếm và liên hệ bất động sản thông qua giao diện hiện đại, tích hợp bản đồ và các bộ lọc nâng cao.
+Chào mừng bạn đến với Nền tảng Đăng tin Bất động sản Full Stack! 🌟 Dự án này cho phép người dùng **đăng tải**, **tìm kiếm** và **liên hệ** bất động sản một cách dễ dàng thông qua giao diện hiện đại, tích hợp bản đồ thông minh và các bộ lọc nâng cao.
 
 ---
 
 ## 🚀 Công nghệ sử dụng
 
-| Thành phần        | Công nghệ                       | Mô tả                                       |
-|-------------------|---------------------------------|---------------------------------------------|
-| Front-end         | React + Next.js                 | Giao diện động, routing hiệu quả (App Router) |
-| State Management  | Redux Toolkit + RTK Query       | Quản lý trạng thái và gọi API hiệu quả       |
-| Styling           | Tailwind CSS                    | Thiết kế responsive, dễ tùy biến            |
-| Back-end          | NestJS                          | Kiến trúc module rõ ràng, dễ bảo trì        |
-| ORM               | Prisma                          | Kết nối cơ sở dữ liệu, truy vấn linh hoạt   |
-| Database          | PostgreSQL                      | Cơ sở dữ liệu quan hệ mạnh mẽ              |
-| Map Integration   | Google Maps API                 | Hiển thị vị trí bất động sản                |
-| Auth              | JSON Web Token (JWT)            | Xác thực và phân quyền                     |
-| Containerization  | Docker                          | Đóng gói ứng dụng nhất quán                 |
-| Deployment        | Vercel (FE), Render (BE), Supabase | Triển khai nhanh chóng, hiệu quả           |
+Chúng tôi tự hào sử dụng một chồng công nghệ hiện đại và mạnh mẽ để xây dựng nền tảng này:
+
+| Thành phần          | Công nghệ                          | Mô tả                                                |
+| :------------------ | :--------------------------------- | :--------------------------------------------------- |
+| **Front-end** | React + Next.js                    | Giao diện người dùng động, hiệu suất cao với **App Router** |
+| **Quản lý trạng thái** | Redux Toolkit + RTK Query          | Quản lý trạng thái và tương tác API hiệu quả             |
+| **Styling** | Tailwind CSS                       | Thiết kế UI nhanh chóng, dễ dàng tùy biến và responsive |
+| **Back-end** | NestJS                             | Kiến trúc backend mạnh mẽ, module rõ ràng và dễ bảo trì |
+| **ORM** | Prisma                             | Công cụ ORM hiện đại, giúp tương tác với database linh hoạt |
+| **Database** | PostgreSQL (qua Supabase)          | Cơ sở dữ liệu quan hệ tin cậy, lưu trữ thông tin      |
+| **Tích hợp bản đồ** | Google Maps API                    | Hiển thị vị trí bất động sản trực quan trên bản đồ   |
+| **Xác thực** | JSON Web Token (JWT)               | Hệ thống xác thực và phân quyền an toàn                 |
+| **Đóng gói** | Docker                             | Đóng gói ứng dụng nhất quán, dễ dàng triển khai       |
+| **Triển khai** | Vercel (FE), Render (BE), Supabase | Triển khai nhanh chóng và hiệu quả                    |
 
 ---
 
-## ✨ Tính năng chính
+## ✨ Tính năng nổi bật
 
-### Cho người dùng
+### Dành cho Người dùng 🙋‍♂️
 
-- 🔐 Đăng ký / Đăng nhập với JWT (email, mật khẩu, số điện thoại tùy chọn)
-- 👤 Quản lý hồ sơ cá nhân, cập nhật thông tin, ảnh đại diện
-- 📄 Xem danh sách bất động sản đã đăng hoặc đã lưu (favorites)
-- 🔍 Tìm kiếm nâng cao theo:
-  - Giá
-  - Diện tích
-  - Vị trí (có từ khóa)
-  - Loại (nhà ở, căn hộ, đất)
-  - Số phòng ngủ
-- 🗺️ Hiển thị bản đồ (Google Maps)
-- ❤️ Lưu yêu thích và xem chi tiết bất động sản
-- ✉️ Liên hệ người bán qua form (tên, email, nội dung)
+* 🔐 **Đăng ký / Đăng nhập**: Dễ dàng tạo tài khoản và đăng nhập an toàn bằng JWT.
+* 👤 **Quản lý hồ sơ**: Cập nhật thông tin cá nhân, ảnh đại diện linh hoạt.
+* 📄 **Xem danh sách**: Theo dõi các bất động sản đã đăng hoặc đã lưu vào mục yêu thích.
+* 🔍 **Tìm kiếm nâng cao**: Lọc bất động sản theo:
+    * Giá cả 💰
+    * Diện tích 📏
+    * Vị trí (theo từ khóa) 📍
+    * Loại hình (nhà ở, căn hộ, đất...) 🏡
+    * Số phòng ngủ 🛏️
+* 🗺️ **Bản đồ trực quan**: Xem vị trí chính xác của bất động sản trên Google Maps.
+* ❤️ **Yêu thích & Chi tiết**: Lưu lại các bất động sản quan tâm và xem thông tin chi tiết.
+* ✉️ **Liên hệ người bán**: Gửi tin nhắn trực tiếp đến người đăng tin qua form tiện lợi.
 
-### Cho quản trị viên (Admin)
+### Dành cho Quản trị viên (Admin) 👑
 
-- 🔐 Đăng nhập với JWT (username/password)
-- 📊 Dashboard quản trị tổng quan
-- 🧱 CRUD bất động sản và danh mục
-- 👥 Quản lý người dùng: khóa/mở tài khoản
-- 📬 Quản lý yêu cầu liên hệ: xem, trả lời, xóa
-- 🔔 Gửi thông báo đến người dùng
+* 🔐 **Đăng nhập**: Đăng nhập an toàn vào bảng điều khiển quản trị.
+* 📊 **Dashboard tổng quan**: Xem báo cáo và thống kê hệ thống.
+* 🧱 **Quản lý bất động sản**: Thao tác **CRUD** (Tạo, Đọc, Cập nhật, Xóa) bất động sản và các danh mục liên quan.
+* 👥 **Quản lý người dùng**: Khóa hoặc mở tài khoản người dùng khi cần.
+* 📬 **Quản lý yêu cầu liên hệ**: Xem, trả lời và xóa các yêu cầu từ người mua.
+* 🔔 **Gửi thông báo**: Gửi thông báo quan trọng đến người dùng.
 
 ---
 
-## 🧠 Tính năng nâng cao (Tùy chọn)
+## 🧠 Tính năng nâng cao (Tùy chọn cho phiên bản tương lai)
 
-- 🔁 Gợi ý bất động sản dựa theo lịch sử tìm kiếm hoặc danh sách yêu thích
-- 💬 Chat thời gian thực giữa người mua và người bán (WebSocket)
-- ⭐ Hệ thống đánh giá bất động sản hoặc người bán
+* 🔁 **Gợi ý thông minh**: Đề xuất bất động sản dựa trên lịch sử tìm kiếm hoặc sở thích.
+* 💬 **Chat thời gian thực**: Kết nối trực tiếp người mua và người bán qua WebSocket.
+* ⭐ **Hệ thống đánh giá**: Cho phép người dùng đánh giá bất động sản hoặc người bán.
 
 ---
 
 ## ⚙️ Hướng dẫn cài đặt và chạy dự án
 
-Dự án này cung cấp hai phương án để chạy ứng dụng: sử dụng **Docker** để đơn giản hóa quá trình triển khai, hoặc cài đặt **cục bộ** từng thành phần.
+Bạn có hai lựa chọn để chạy dự án: sử dụng **Docker** (khuyến nghị để đơn giản hóa) hoặc cài đặt **cục bộ** từng thành phần.
 
 ### 1. Yêu cầu cài đặt
 
@@ -75,72 +77,81 @@ Dự án này cung cấp hai phương án để chạy ứng dụng: sử dụng
 
 * **Node.js** (phiên bản 16 trở lên được khuyến nghị)
 * **npm** (thường đi kèm với Node.js) hoặc **Yarn**
-* **Python** (phiên bản 3.x)
-* **Redis** (server)
-* **PostgreSQL** (server)
-* **Prisma CLI**: Cài đặt toàn cục: `npm install -g prisma`
+* **Python** (phiên bản 3.x - nếu dự án có tích hợp)
+* **Redis** (server - nếu sử dụng trong backend)
+* **PostgreSQL** (server - nếu không dùng Supabase là DB chính)
+* **Prisma CLI**: Cài đặt toàn cục bằng lệnh: `npm install -g prisma`
 
 ---
 
-### 2. Cấu hình `.env`
+### 2. Cấu hình các biến môi trường (`.env`)
 
-Bạn cần tạo các file `.env` chứa các biến môi trường cho cả phần frontend và backend.
+Bạn cần tạo các file `.env` chứa các thông tin cấu hình quan trọng cho cả frontend và backend.
 
 * **`backend/.env`**:
-    Tạo file `.env` trong thư mục **`backend/`** với nội dung sau. Hãy thay đổi các giá trị placeholder bằng thông tin cấu hình database thực tế của bạn.
+    Tạo file `.env` trong thư mục **`backend/`** với nội dung sau. Các thông tin Supabase đã được điền sẵn từ cấu hình của bạn.
 
     ```env
-    DATABASE_URL="postgresql://user:password@localhost:5432/your_database_name?schema=public"
-    JWT_SECRET="your_strong_jwt_secret_key" # Thay đổi bằng một chuỗi bí mật mạnh và khó đoán
-    REDIS_URL="redis://localhost:6379/0" # Đảm bảo Redis server đang chạy nếu sử dụng
-    UPLOAD_FOLDER=./uploads # Thư mục lưu trữ file upload trên server
-    RESULT_FOLDER=./results # Thư mục lưu trữ kết quả xử lý trên server
-    # Nếu bạn dùng Google Maps API cho backend (ví dụ: Geocoding), thêm vào đây:
-    # Maps_API_KEY="your_Maps_api_key"
+    DATABASE_URL="postgresql://postgres.aapedgzmjpesntappypa:phuocly789@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require&connection_limit=1"
+    JWT_SECRET="phuoclyminh789@gmail.com" # KHUYẾN NGHỊ: Thay đổi bằng một chuỗi bí mật mạnh hơn cho production
+    SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
+    SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTU5MTIzOSwiZXhwIjoyMDY3MTY3MjM5fQ.tFrKUuU1DxFpxK8GRzieULrFOybKze2moO-dyGCjtSc"
+    # Các biến khác nếu có (ví dụ: UPLOAD_FOLDER, RESULT_FOLDER, REDIS_URL nếu dùng Redis)
+    # UPLOAD_FOLDER=./uploads
+    # RESULT_FOLDER=./results
+    # REDIS_URL="redis://localhost:6379/0"
     ```
 
-* **`frontend/.env`**:
-    Tạo file `.env` trong thư mục **`frontend/`** với nội dung sau:
+* **`frontend/.env` (hoặc `.env.local` nếu dùng Next.js)**:
+    Tạo file `.env` (nếu bạn sử dụng Vite) hoặc `.env.local` (nếu bạn sử dụng Next.js) trong thư mục **`frontend/`** với nội dung sau:
 
-    ```env
-    NEXT_PUBLIC_API_URL="http://localhost:5000/api" # Đảm bảo trùng với cổng API của backend
-    # Nếu bạn dùng Google Maps API trực tiếp trên client, thêm vào đây:
-    # NEXT_PUBLIC_Maps_API_KEY="your_Maps_api_key"
-    ```
-    **Lưu ý:** Đối với Next.js/React, các biến môi trường cho frontend cần bắt đầu bằng **`NEXT_PUBLIC_`** (hoặc `REACT_APP_` nếu là Create React App) để có thể truy cập được từ phía client.
+    * **Nếu bạn dùng Vite (tiền tố `VITE_`):**
+        ```env
+        VITE_API_URL="http://localhost:5000" # Đảm bảo khớp với cổng API của backend
+        VITE_SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
+        VITE_SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1OTEyMzksImV4cCI6MjA2NzE2NzIzOX0.QztdDoBzydweEG2bkRLncdINmpJE3r3fvnIZp1dQf_w"
+        ```
+
+    * **Nếu bạn dùng Next.js (tiền tố `NEXT_PUBLIC_`):**
+        ```env
+        NEXT_PUBLIC_API_URL="http://localhost:5000" # Đảm bảo khớp với cổng API của backend
+        NEXT_PUBLIC_SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
+        NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1OTEyMzksImV4cCI6MjA2NzE2NzIzOX0.QztdDoBzydweEG2bkRLncdINmpJE3r3fvnIZp1dQf_w"
+        ```
+    **Lưu ý quan trọng:** Hãy chọn **một trong hai** cấu hình frontend trên, tùy thuộc vào framework bạn đang sử dụng cho giao diện người dùng.
 
 ---
 
 ### 3. 🚀 Chạy dự án với Docker (Được khuyến nghị)
 
-Phương án này đóng gói toàn bộ ứng dụng (frontend, backend, database) trong các container, giúp việc thiết lập trở nên đơn giản và đồng nhất.
+Phương án này tận dụng Docker để tạo môi trường chạy ứng dụng khép kín, giúp bạn không cần lo lắng về các phụ thuộc cục bộ.
 
 1.  **Di chuyển vào thư mục gốc của dự án**:
-    Mở terminal hoặc command prompt và điều hướng đến thư mục gốc của dự án (nơi chứa file `docker-compose.yml`).
+    Mở terminal hoặc Command Prompt và điều hướng đến thư mục chứa file `docker-compose.yml`.
 
     ```bash
     cd <tên_thư_mục_dự_án>
     ```
 
-2.  **Khởi tạo cơ sở dữ liệu và áp dụng migrations**:
-    Để đảm bảo database được thiết lập đúng cách với schema của bạn, chạy các lệnh sau:
+2.  **Áp dụng Prisma Migrations lên Supabase Database**:
+    Vì bạn đang sử dụng **Supabase PostgreSQL** làm cơ sở dữ liệu chính, bạn chỉ cần đảm bảo Prisma schema được đồng bộ với database từ xa.
 
     ```bash
-    docker-compose up -d db # Khởi chạy dịch vụ database ở chế độ nền
-    docker-compose exec server npx prisma migrate deploy # Áp dụng các migration Prisma từ bên trong container 'server'
+    docker-compose up -d server # Khởi chạy dịch vụ backend ở chế độ nền để có thể chạy lệnh Prisma
+    docker-compose exec server npx prisma migrate deploy # Áp dụng các migration từ bên trong container 'server'
     ```
-    * **Lưu ý:** Tên service `server` được sử dụng để chạy lệnh `prisma migrate`. Đảm bảo tên service của backend trong `docker-compose.yml` của bạn là `server`. Nếu lệnh lỗi, bạn có thể cần chạy `docker-compose build server` trước đó.
+    * **Mẹo**: Nếu bạn gặp lỗi, hãy thử chạy `docker-compose build server` trước khi thực hiện lệnh `exec`. Đảm bảo `DATABASE_URL` trong `backend/.env` đã trỏ đúng tới Supabase của bạn.
 
 3.  **Khởi động toàn bộ ứng dụng**:
-    Sau khi database đã sẵn sàng và migrations đã được áp dụng, bạn có thể khởi chạy tất cả các dịch vụ:
+    Sau khi các migration đã được áp dụng, bạn có thể khởi chạy tất cả các dịch vụ (frontend và backend) bằng một lệnh duy nhất:
 
     ```bash
     docker-compose up --build
     ```
-    * Lệnh `--build` sẽ build lại các Docker image cho frontend và backend nếu có bất kỳ thay đổi nào trong mã nguồn hoặc `Dockerfile` của chúng. Lần đầu tiên chạy sẽ mất một chút thời gian để tải xuống và xây dựng tất cả các image.
+    * Lệnh `--build` sẽ tự động build lại các Docker image cho `client` và `server` nếu có bất kỳ thay đổi nào trong mã nguồn hoặc `Dockerfile` của chúng. Lần đầu tiên chạy sẽ mất một chút thời gian để tải xuống các image cơ bản và xây dựng ứng dụng.
 
 4.  **Truy cập ứng dụng**:
-    Khi tất cả các dịch vụ đã khởi động thành công, bạn có thể truy cập ứng dụng trên trình duyệt:
+    Khi tất cả các dịch vụ đã khởi động thành công, bạn có thể truy cập ứng dụng trên trình duyệt web của mình:
 
     * 🖥 **Front-end (Client)**: `http://localhost:3000`
     * 🔧 **Back-end (Server API)**: `http://localhost:5000/api`
@@ -149,22 +160,22 @@ Phương án này đóng gói toàn bộ ứng dụng (frontend, backend, databa
 
 ### 4. 🏃 Chạy dự án cục bộ (Không dùng Docker)
 
-Phương án này yêu cầu bạn cài đặt và quản lý từng thành phần riêng lẻ trên máy tính của mình.
+Nếu bạn muốn kiểm soát từng thành phần riêng lẻ hoặc không muốn sử dụng Docker, hãy làm theo các bước sau:
 
 1.  **Cài đặt các dependency cho Backend**:
-    Điều hướng đến thư mục **`backend/`** và cài đặt các gói Node.js:
+    Điều hướng đến thư mục **`backend/`** và cài đặt tất cả các gói Node.js cần thiết:
 
     ```bash
     cd backend/
     npm install # hoặc yarn install
     ```
 
-2.  **Khởi tạo cơ sở dữ liệu và áp dụng migrations (Backend)**:
-    Đảm bảo PostgreSQL và Redis server của bạn đang chạy. Sau đó, từ thư mục **`backend/`**:
+2.  **Áp dụng Prisma Migrations (Backend)**:
+    Đảm bảo rằng file `.env` trong thư mục `backend/` đã được cấu hình chính xác để kết nối tới Supabase của bạn. Sau đó, từ thư mục **`backend/`**:
 
     ```bash
     npx prisma migrate deploy
-    # hoặc npx prisma db push --preview-feature (nếu bạn chỉ muốn đồng bộ schema nhanh mà không cần migration lịch sử)
+    # Tùy chọn: npx prisma db push --preview-feature (để đồng bộ schema nhanh mà không cần migration lịch sử)
     ```
 
 3.  **Chạy Backend Server**:
@@ -173,10 +184,10 @@ Phương án này yêu cầu bạn cài đặt và quản lý từng thành ph�
     ```bash
     npm run start:dev # Hoặc lệnh khởi động server development của bạn
     ```
-    Backend API sẽ chạy tại `http://localhost:5000/api`.
+    Backend API sẽ bắt đầu lắng nghe tại `http://localhost:5000/api`.
 
 4.  **Cài đặt các dependency cho Frontend**:
-    Mở một terminal mới, điều hướng đến thư mục **`frontend/`** và cài đặt các gói Node.js:
+    Mở một terminal **mới**, điều hướng đến thư mục **`frontend/`** và cài đặt các gói Node.js:
 
     ```bash
     cd frontend/
@@ -189,7 +200,7 @@ Phương án này yêu cầu bạn cài đặt và quản lý từng thành ph�
     ```bash
     npm run dev # Hoặc lệnh khởi động dev server của bạn
     ```
-    Frontend sẽ chạy tại `http://localhost:3000`.
+    Frontend sẽ được truy cập tại `http://localhost:3000`.
 
 ---
 
@@ -197,7 +208,7 @@ Phương án này yêu cầu bạn cài đặt và quản lý từng thành ph�
 
 **Nếu bạn sử dụng Docker:**
 
-Để dừng tất cả các dịch vụ và xóa các container, network, volumes do Docker Compose tạo ra:
+Để dừng tất cả các dịch vụ đang chạy và xóa các container, network, volumes do Docker Compose tạo ra:
 
 ```bash
 docker-compose down
