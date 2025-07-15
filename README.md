@@ -138,8 +138,8 @@ Phương án này tận dụng Docker để tạo môi trường chạy ứng d�
 4.  **Truy cập ứng dụng**:
     Khi tất cả các dịch vụ đã khởi động thành công, bạn có thể truy cập ứng dụng trên trình duyệt web của mình:
 
-    * 🖥 **Front-end (Client)**: `http://localhost:3000`
-    * 🔧 **Back-end (Server API)**: `http://localhost:5000/api`
+    * 🖥 **Front-end (Client)**: `http://localhost:3001`
+    * 🔧 **Back-end (Server API)**: `http://localhost:3000/api`
 
 ---
 
