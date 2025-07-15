@@ -92,7 +92,7 @@ Bạn cần tạo các file `.env` chứa các thông tin cấu hình quan trọ
     ```env
     DATABASE_URL="postgresql://postgres.aapedgzmjpesntappypa:phuocly789@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require&connection_limit=1"
     JWT_SECRET="phuoclyminh789@gmail.com"
-    SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
+    SUPABASE_URL="https://aapedgzmjpesntappypa.supabase.co"
     SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTU5MTIzOSwiZXhwIjoyMDY3MTY3MjM5fQ.tFrKUuU1DxFpxK8GRzieULrFOybKze2moO-dyGCjtSc"
     ```
 
@@ -102,7 +102,7 @@ Bạn cần tạo các file `.env` chứa các thông tin cấu hình quan trọ
     * **Nếu bạn dùng Vite (tiền tố `VITE_`):**
         ```env
         VITE_API_URL="http://localhost:3000"
-        VITE_SUPABASE_URL="[https://aapedgzmjpesntappypa.supabase.co](https://aapedgzmjpesntappypa.supabase.co)"
+        VITE_SUPABASE_URL="https://aapedgzmjpesntappypa.supabase.co"
         VITE_SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1OTEyMzksImV4cCI6MjA2NzE2NzIzOX0.QztdDoBzydweEG2bkRLncdINmpJE3r3fvnIZp1dQf_w"
         ```
     **Lưu ý quan trọng:** Hãy chọn **một trong hai** cấu hình frontend trên, tùy thuộc vào framework bạn đang sử dụng cho giao diện người dùng.
