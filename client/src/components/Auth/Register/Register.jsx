@@ -96,7 +96,7 @@ const Register = () => {
                 required
             />
             <input
-                type="tel"
+                type="number"
                 name="phone"
                 placeholder="Số điện thoại"
                 value={formData.phone}
