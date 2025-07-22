@@ -5,6 +5,7 @@ import { useGetPropertiesQuery, useGetFavoritesQuery, useAddFavoriteMutation, us
 import Toast from '../../Toast/Toast';
 
 const SimilarProperties = ({ currentId }) => {
+    // Gọi tất cả hook ở cấp cao nhất
     const { data, isLoading, isError, isFetching } = useGetPropertiesQuery({ page: 1, limit: 50 });
     const { data: favorites, isLoading: isFavoritesLoading } = useGetFavoritesQuery();
     const [addFavorite] = useAddFavoriteMutation();
@@ -12,31 +13,51 @@ const SimilarProperties = ({ currentId }) => {
     const [toast, setToast] = useState({ message: '', type: '' });
 
     const properties = data?.properties;
-
     const favoriteIds = new Set(favorites?.map(fav => fav.propertyid) || []);
 
+    // Lọc và random dữ liệu trong useMemo
+    const filtered = useMemo(() => {
+        return properties ? properties.filter((prop) => prop.id !== parseInt(currentId)) : [];
+    }, [properties, currentId]);
+
+    const randomThree = useMemo(() => {
+        if (!filtered || filtered.length === 0) return [];
+        const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 3);
+    }, [filtered]);
+
+    // useEffect cho toast
+    useEffect(() => {
+        if (toast.message) {
+            const timeout = setTimeout(() => {
+                setToast({ message: '', type: '' });
+            }, 2000);
+            return () => clearTimeout(timeout);
+        }
+    }, [toast]);
+
+    // Xử lý yêu thích
     const handleToggleFavorite = async (propertyId) => {
         try {
-            // Kiểm tra xem người dùng đã đăng nhập chưa
             const token = localStorage.getItem('token');
             if (!token) {
-                setToast({ message: 'Vui lòng đăng nhập để thêm vào danh sách yêu thích!', type: 'error' })
+                setToast({ message: 'Vui lòng đăng nhập để thêm vào danh sách yêu thích!', type: 'error' });
                 return;
             }
-
             if (favoriteIds.has(propertyId)) {
                 await removeFavorite(propertyId).unwrap();
-                setToast({ message: 'Xóa khỏi danh sách yêu thích thành công', type: 'success' })
+                setToast({ message: 'Xóa khỏi danh sách yêu thích thành công', type: 'success' });
             } else {
                 await addFavorite(propertyId).unwrap();
-                setToast({ message: 'Thêm vào danh sách yêu thích thành công', type: 'success' })
+                setToast({ message: 'Thêm vào danh sách yêu thích thành công', type: 'success' });
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);
-            setToast({ message: 'Có lỗi xảy ra khi thêm yêu thích: ' + error, type: 'error' })
+            setToast({ message: 'Có lỗi xảy ra khi thêm yêu thích: ' + error, type: 'error' });
         }
     };
 
+    // Kiểm tra điều kiện sau khi gọi tất cả hook
     if (isLoading && !isFetching || isFavoritesLoading) {
         return <div className={styles.loading}>Loading......</div>;
     }
@@ -49,34 +70,13 @@ const SimilarProperties = ({ currentId }) => {
         return <div className={styles.empty}>Không có dữ liệu để hiển thị.</div>;
     }
 
-    // Lọc ra các property không trùng với currentId
-    const filtered = properties.filter((prop) => prop.id !== parseInt(currentId));
-    // Trộn ngẫu nhiên
-    const randomThree = useMemo(() => {
-        if (!filtered || filtered.length === 0) return [];
-        const shuffled = [...filtered].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, 3);
-    }, [properties]); // Chỉ khi dữ liệu bất động sản thay đổi mới random lại
-    useEffect(() => {
-        if (toast.message) {
-            const timeout = setTimeout(() => {
-                setToast({ message: '', type: '' });
-            }, 2000); // 🕓 Tự động ẩn sau 4 giây
-
-            return () => clearTimeout(timeout); // 🔁 Dọn dẹp timeout khi toast thay đổi
-        }
-    }, [toast]);
-
     return (
         <div className={styles.similar}>
             <h3 className={styles.heading}>Bất động sản tương tự</h3>
             <Toast
                 message={toast.message}
                 type={toast.type}
-                onClose={() => {
-                    setToast({ message: '', type: '' });
-                    setIsSuccess(null);
-                }}
+                onClose={() => setToast({ message: '', type: '' })}
             />
             <div className={styles.grid}>
                 {randomThree.map((prop) => (

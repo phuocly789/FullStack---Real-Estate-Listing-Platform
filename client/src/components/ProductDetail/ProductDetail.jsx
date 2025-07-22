@@ -12,48 +12,65 @@ import Toast from '../Toast/Toast';
 const PropertyDetail = () => {
     const { id } = useParams();
     const { data: property, isLoading, isError } = useGetPropertyQuery(id);
-    const { data: favorites, isLoading: isFavoritesLoading } = useGetFavoritesQuery();
     const [addFavorite] = useAddFavoriteMutation();
     const [removeFavorite] = useRemoveFavoriteMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    // Kiểm tra xem bất động sản hiện tại có trong danh sách yêu thích không
-    const isFavorite = favorites?.some(fav => fav.propertyid === parseInt(id));
+    // Kiểm tra token và favorites
+    const token = localStorage.getItem('token');
+    const {
+        data: favorites,
+        isLoading: isFavoritesLoading,
+        isError: isFavoritesError,
+    } = useGetFavoritesQuery(undefined, {
+        skip: !token,
+    });
 
+    // useEffect cho toast
+    useEffect(() => {
+        if (toast.message) {
+            const timeout = setTimeout(() => {
+                setToast({ message: '', type: '' });
+            }, 2000); // Tự động ẩn sau 2 giây
+            return () => clearTimeout(timeout);
+        }
+    }, [toast]);
+
+    // Hàm xử lý yêu thích
     const handleToggleFavorite = async () => {
         try {
-            const token = localStorage.getItem('token');
             if (!token) {
-                setToast({ message: 'Vui lòng đăng nhập để thêm vào danh sách yêu thích!', type: 'error' })
+                setToast({ message: 'Vui lòng đăng nhập để thêm vào danh sách yêu thích!', type: 'error' });
                 return;
             }
-
+            const isFavorite = favorites?.includes(id);
             if (isFavorite) {
                 await removeFavorite(id).unwrap();
-                setToast({ message: 'Xóa khỏi danh sách yêu thích thành công', type: 'success' })
+                setToast({ message: 'Xóa khỏi danh sách yêu thích thành công', type: 'success' });
             } else {
                 await addFavorite(id).unwrap();
-                setToast({ message: 'Thêm vào danh sách yêu thích thành công', type: 'success' })
+                setToast({ message: 'Thêm vào danh sách yêu thích thành công', type: 'success' });
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);
-            setToast({ message: 'Có lỗi xảy ra khi thêm yêu thích: ' + error, type: 'error' })
+            setToast({ message: 'Có lỗi xảy ra khi thêm yêu thích: ' + error, type: 'error' });
         }
     };
 
     const nextImage = () => {
         setCurrentImageIndex((prev) =>
-            property.images.length === 0 ? 0 : (prev + 1) % property.images.length
+            property?.images?.length === 0 ? 0 : (prev + 1) % property.images.length
         );
     };
 
     const prevImage = () => {
         setCurrentImageIndex((prev) =>
-            property.images.length === 0 ? 0 : (prev - 1) % property.images.length
+            property?.images?.length === 0 ? 0 : (prev - 1) % property.images.length
         );
     };
 
+    // Kiểm tra trạng thái loading hoặc error
     if (isLoading || isFavoritesLoading) {
         return <div className="text-center mt-5">Đang tải...</div>;
     }
@@ -61,15 +78,9 @@ const PropertyDetail = () => {
     if (isError || !property) {
         return <div className="text-center mt-5">Không tìm thấy bất động sản.</div>;
     }
-    useEffect(() => {
-        if (toast.message) {
-            const timeout = setTimeout(() => {
-                setToast({ message: '', type: '' });
-            }, 2000); // 🕓 Tự động ẩn sau 4 giây
 
-            return () => clearTimeout(timeout); // 🔁 Dọn dẹp timeout khi toast thay đổi
-        }
-    }, [toast]);
+    const isFavorite = favorites?.includes(id);
+
     return (
         <div className={styles.container}>
             <div className="row mt-5">
@@ -77,10 +88,7 @@ const PropertyDetail = () => {
                     <Toast
                         message={toast.message}
                         type={toast.type}
-                        onClose={() => {
-                            setToast({ message: '', type: '' });
-                            setIsSuccess(null);
-                        }}
+                        onClose={() => setToast({ message: '', type: '' })}
                     />
                     <div className={styles.card}>
                         <div className={styles.gallery}>
@@ -120,7 +128,6 @@ const PropertyDetail = () => {
                             <MapSection latitude={property.latitude} longitude={property.longitude} />
                         </div>
                         <SimilarProperties currentId={id} />
-                       
                     </div>
                 </div>
                 <div className="col-md-3">
