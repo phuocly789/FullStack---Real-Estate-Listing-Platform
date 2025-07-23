@@ -160,7 +160,7 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                 <div className={`col-12 `}>
                     <label className="form-label">Hình ảnh (URL)</label>
                     {form.images.map((img, index) => (
-                        <div key={index} className={`d-flex align-items-center mb-2 ${styles.imageRow}`}>
+                        <div key={index} className={` align-items-center mb-2 ${styles.imageRow}`}>
                             <input
                                 type="text"
                                 className="form-control me-2"
@@ -168,10 +168,17 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
                                 onChange={(e) => handleImageChange(index, e.target.value)}
                                 required
                             />
-                            {errors.img && <div className="text-danger">{errors.img}</div>}
-
                             {form.images.length > 1 && (
-                                <button type="button" className="btn btn-danger btn-sm" onClick={() => removeImageField(index)}>X</button>
+                                <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                onClick={() => removeImageField(index)}
+                                >
+                                    X
+                                </button>
+                            )}
+                            {errors[`images-${index}`] && (
+                                <p className="text-danger">{errors[`images-${index}`]}</p>
                             )}
                         </div>
                     ))}

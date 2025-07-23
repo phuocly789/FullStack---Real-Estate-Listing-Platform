@@ -25,14 +25,11 @@ const App = () => (
       <Route path="/product/:id" element={<ProductDetailPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/collection" element={<CollectionPage />} />
+      <Route path="/favorites" element={<FavoritePage />} />
       {/* USER chỉ được truy cập */}
       <Route
         path="/profile"
         element={<ProtectedRoute element={<ProfilePage />} allowedRoles={['USER']} />}
-      />
-      <Route
-        path="/favorites"
-        element={<ProtectedRoute element={<FavoritePage />} allowedRoles={['USER']} />}
       />
       {/* ADMIN chỉ được truy cập */}
       <Route

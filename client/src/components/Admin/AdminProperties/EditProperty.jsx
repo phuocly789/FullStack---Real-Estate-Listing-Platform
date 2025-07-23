@@ -9,8 +9,7 @@ const EditProperty = () => {
     const navigate = useNavigate();
     const { data: property, isLoading } = useGetPropertyQuery(id);
     const [updateProperty] = useUpdatePropertyMutation();
-    const [toast, setToast] = useState('');
-    const [isSuccess, setIsSuccess] = useState(null);
+    const [toast, setToast] = useState({ message: '', type: '' });
     const handleSubmit = async (values) => {
         try {
             await updateProperty({ id, ...values }).unwrap();
@@ -21,6 +20,9 @@ const EditProperty = () => {
                 message: 'Lỗi khi cập nhật: ' + (err?.data?.message || err.message),
                 type: 'error',
             });
+            setTimeout(() => {
+                setToast({ message: '', type: '' });
+            }, 3000);
         }
     };
 

@@ -4,6 +4,10 @@ services:
       context: ./client
     ports:
       - "3001:80"  # map Nginx port 80 -> localhost:3001
+    environment:
+      - VITE_API_URL=http://localhost:3000
+      - VITE_SUPABASE_URL=https://aapedgzmjpesntappypa.supabase.co
+      - VITE_SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFhcGVkZ3ptanBlc250YXBweXBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1OTEyMzksImV4cCI6MjA2NzE2NzIzOX0.QztdDoBzydweEG2bkRLncdINmpJE3r3fvnIZp1dQf_w
     depends_on:
       - server
     restart: unless-stopped

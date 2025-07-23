@@ -156,6 +156,7 @@ const Collection = () => {
                             title={prop.title}
                             price={prop.price}
                             area={prop.area}
+                            createdat={prop.createdat}
                             location={prop.location}
                             image={
                                 prop.images && prop.images[0]
