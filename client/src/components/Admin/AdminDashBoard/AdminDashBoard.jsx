@@ -17,7 +17,7 @@ const AdminDashBoard = () => {
             <h2 className="mb-4">Trang Quản Trị</h2>
 
             {/* Cards thống kê */}
-            <div className={`row mb-4` }>
+            <div className={`row mb-4`}>
                 <Link to="/admin_properties" className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-primary">
                         <div className={`card-body `}>
@@ -74,7 +74,11 @@ const AdminDashBoard = () => {
                                         <td>{property.title}</td>
                                         <td>{property.type}</td>
                                         <td>{property.price.toLocaleString()}đ</td>
-                                        <td>{new Date(property.createdat).toLocaleDateString()}</td>
+                                        <td>
+                                            {property.createdat
+                                                ? new Date(property.createdat).toLocaleDateString('vi-VN')
+                                                : 'Không có thời gian'}
+                                        </td>
                                     </tr>
                                 ))
                             )}
@@ -82,7 +86,7 @@ const AdminDashBoard = () => {
                     </table>
                 </div>
             </div>
-            
+
             <div className="card mb-5" >
                 <div className="card-header">
                     <strong>Danh sách User đăng ký mới</strong>
@@ -106,7 +110,11 @@ const AdminDashBoard = () => {
                                         <td>{user.name}</td>
                                         <td>{user.email}</td>
                                         <td>{user.role}</td>
-                                        <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                                        <td>
+                                            {user.createdAt
+                                                ? new Date(user.createdAt).toLocaleDateString('vi-VN')
+                                                : 'Không có thời gian'}
+                                        </td>
                                     </tr>
                                 ))
                             )}
@@ -114,7 +122,7 @@ const AdminDashBoard = () => {
                     </table>
                 </div>
             </div>
-            
+
             <div className="card mb-5">
                 <div className="card-header">
                     <strong>Danh sách Contacts mới nhất</strong>

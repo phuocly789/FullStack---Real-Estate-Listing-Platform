@@ -124,7 +124,11 @@ const AdminProperties = () => {
                                                     <td>{property.bathrooms}</td>
                                                     <td className={styles.description}>{property.description}</td>
                                                     <td>{property.price.toLocaleString()}đ</td>
-                                                    <td>{new Date(property.createdat).toLocaleDateString()}</td>
+                                                    <td>
+                                                        {property.createdat
+                                                            ? new Date(property.createdat).toLocaleDateString('vi-VN')
+                                                            : 'Không có thời gian'}
+                                                    </td>
                                                     <td>
                                                         <div className={styles.actionButtons}>
                                                             <button className={styles.actionButton} title="Chỉnh sửa" onClick={() => handleEdit(property.id)}>

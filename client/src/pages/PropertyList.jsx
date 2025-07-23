@@ -82,6 +82,7 @@ const PropertyList = ({ properties, isLoading, isError }) => {
                         title={prop.title}
                         price={prop.price}
                         area={prop.area}
+                        createdat={prop.createdat}
                         location={prop.location}
                         image={
                             prop.images[0]

@@ -62,6 +62,7 @@ const Favorite = () => {
                             price={fav.property.price}
                             area={fav.property.area}
                             location={fav.property.location}
+                            createdat={fav.property.createdat}
                             image={
                                 fav.property.images[0]
                                     ? `${fav.property.images[0]}`

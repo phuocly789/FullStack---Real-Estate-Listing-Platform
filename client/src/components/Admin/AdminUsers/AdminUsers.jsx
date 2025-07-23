@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDeleteAccountMutation, useDeleteUserMutation, useGetAllUsersQuery } from '../../../api/apiSlice';
+import { useDeleteAccountMutation, useDeleteUserMutation, useGetAllUsersQuery, useGetProfileQuery } from '../../../api/apiSlice';
 import { Link } from 'react-router-dom';
 import Navbar from '../../Navbar/Navbar';
 import Footer from '../../Footer/Footer';
@@ -8,15 +8,7 @@ import ConfirmModal from '../../ConfirmModal/ConfirmModal';
 import styles from './AdminUsers.module.css'
 const AdminUsers = () => {
     const { data: users = [], isLoading: loadingUsers, refetch } = useGetAllUsersQuery();
-
-    //
-    // const totalCount = data?.totalCount || 0;
-    // const totalPages = Math.ceil(totalCount / limit);
-    //
-    const handleNextPage = () => setPage((prev) => prev + 1);
-
-    const handlePrevPage = () => page > 1 && setPage((prev) => prev - 1);
-    //
+    const { data: currentUser } = useGetProfileQuery();
     // const navigate = useNavigate();
     const [deleteuser] = useDeleteUserMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
@@ -24,25 +16,33 @@ const AdminUsers = () => {
     // //
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
-
     const openConfirmModal = (id) => {
+        if (id === currentUser?.id) {
+            setToast({
+                message: 'Không thể tự xoá chính mình!',
+                type: 'error'
+            });
+            setIsSuccess(false);
+            return;
+        }
         setSelectedId(id);
         setShowConfirm(true);
     };
+
     const handleDelete = async () => {
         try {
             await deleteuser(selectedId).unwrap();
             setToast({
                 message: 'Xóa Thành Công',
-                type: 'success'
+                type: 'success',
             });
             setIsSuccess(true);
-            setShowConfirm(false)
+            setShowConfirm(false);
             refetch();
         } catch (err) {
             setToast({
                 message: err?.data?.message || err.message,
-                type: 'error'
+                type: 'error',
             });
             setIsSuccess(false);
         }
@@ -67,7 +67,7 @@ const AdminUsers = () => {
                     <div className="col-md-4 col-lg-3 mb-3">
                         <div className={`card text-white bg-warning ${styles.card}`}>
                             <div className="card-body">
-                                <h5 className="card-title">Tổng Yêu Cầu Liên Hệ</h5>
+                                <h5 className="card-title">Tổng User</h5>
                                 <p className="card-text display-6">
                                     {loadingUsers ? '...' : users.length}
                                 </p>

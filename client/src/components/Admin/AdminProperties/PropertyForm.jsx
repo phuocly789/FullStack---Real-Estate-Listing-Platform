@@ -50,11 +50,12 @@ const PropertyForm = ({ initialValues = {}, onSubmit }) => {
         if (form.longitude < -180 || form.longitude > 180) newErrors.longitude = 'Kinh độ không hợp lệ';
         if (form.latitude < -90 || form.latitude > 90) newErrors.latitude = 'Vĩ độ không hợp lệ';
 
-        // Regex URL đơn giản
-        const urlRegex = /^https?:\/\/.*\.(jpg|jpeg|png|webp|gif)$/i;
+        const urlRegex = /.*\.(jpg|jpeg|png|webp|gif)$/i;
         form.images.forEach((img, i) => {
-            if (!urlRegex.test(img)) {
-                newErrors[`images-${i}`] = 'URL hình ảnh không hợp lệ';
+            if (img.trim() === '') {
+                newErrors[`images-${i}`] = 'URL hình ảnh không được để trống';
+            } else if (!urlRegex.test(img)) {
+                newErrors[`images-${i}`] = 'URL không hợp lệ';
             }
         });
         console.log('Validation errors:', newErrors);

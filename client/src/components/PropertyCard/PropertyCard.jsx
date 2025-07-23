@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import styles from './PropertyCard.module.css';
 import { FaRegHeart, FaHeart, FaCamera } from 'react-icons/fa';
 
-const PropertyCard = ({ id, title, price, area, location, image, imageCount, isFavorite, onToggleFavorite }) => {
+const PropertyCard = ({ id, title, price, area, location, image, imageCount, isFavorite, onToggleFavorite, createdat }) => {
     return (
         <div className={styles.card}>
             <Link to={`/product/${id}`} className={styles.imageLink}>
@@ -27,7 +27,11 @@ const PropertyCard = ({ id, title, price, area, location, image, imageCount, isF
                     {area ? `${area} m²` : 'Diện tích không xác định'} - {location || 'Vị trí không xác định'}
                 </div>
                 <div className={styles.footer}>
-                    <span>{new Date().toLocaleDateString('vi-VN')}</span>
+                    <span>
+                        {createdat
+                            ? new Date(createdat).toLocaleDateString('vi-VN')
+                            : 'Không có thời gian'}
+                    </span>
                     <button
                         className={`${styles.heartIcon} ${isFavorite ? styles.favoriteActive : ''}`}
                         onClick={(e) => {
@@ -39,7 +43,7 @@ const PropertyCard = ({ id, title, price, area, location, image, imageCount, isF
                     </button>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
