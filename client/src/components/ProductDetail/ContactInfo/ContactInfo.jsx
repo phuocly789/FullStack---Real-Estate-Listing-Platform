@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './ContactInfo.module.css';
 import { useCreateContactMutation, useGetPropertyCountByUserQuery, useGetUserByIdQuery, useGetContactsQuery, useGetProfileQuery } from '../../../api/apiSlice';
 import Toast from '../../Toast/Toast';
@@ -14,16 +14,37 @@ const ContactInfo = ({ userid, propertyid }) => {
     const [message, setMessage] = useState('');
     const [createContact, { isLoading: sending }] = useCreateContactMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
-
-    if (isUserLoading || isContactsLoading) {
-        return <div className="text-center mt-5">Đang tải...</div>;
+    useEffect(() => {
+        if (toast.message) {
+            const timeout = setTimeout(() => {
+                setToast({ message: '', type: '' });
+            }, 2000);
+            return () => clearTimeout(timeout);
+        }
+    }, [toast]);
+    if (isUserLoading) {
+        return (
+            <div className={styles.loaderContainer}>
+                <div className={styles.spinner}></div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        );
     }
+
     if (isUserError) {
-        return <div className="text-center mt-5">Không tìm thấy thông tin liên hệ</div>;
+        return (
+            <div className={styles.errorContainer}>
+                <p>Lỗi: Không thể tải dữ liệu người đăng.</p>
+                <button className={`btn btn-primary ${styles.retryBtn}`} onClick={() => window.location.reload()}>
+                    Thử lại
+                </button>
+            </div>
+        );
     }
     if (!currentUser) {
         return <div className="text-center mt-5">Vui lòng đăng nhập để gửi liên hệ</div>;
     }
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();

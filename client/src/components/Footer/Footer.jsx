@@ -12,10 +12,9 @@ const Footer = () => {
                 <div className={styles.column}>
                     <h5>Liên kết nhanh</h5>
                     <ul>
-                        <li><a href="#">Trang chủ</a></li>
-                        <li><a href="#">Tin tức</a></li>
-                        <li><a href="#">BDS HCM</a></li>
-                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="/">Trang chủ</a></li>
+                        <li><a href="/collection">Bất Động Sản</a></li>
+                    
                     </ul>
                 </div>
                 <div className={styles.column}>

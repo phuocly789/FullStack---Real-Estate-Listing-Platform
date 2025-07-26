@@ -12,54 +12,93 @@ const extractProvince = (location) => {
     return parts.length > 1 ? parts[parts.length - 1] : location;
 };
 
-const MainContent = ({ properties, isLoading, isError }) => {
+// Hàm rút gọn văn bản
+const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+};
+
+const MainContent = ({ properties }) => {
     const [activeTab, setActiveTab] = useState('featured');
-    //tạo danh sách location dựa vào properties 
+    const [tabStartIndex, setTabStartIndex] = useState(0); // Quản lý vị trí bắt đầu của tab
+
+    // Tạo danh sách tỉnh/thành phố dựa vào properties
     const provinces = properties
         ? [...new Set(properties.map((prop) => extractProvince(prop.location)))]
         : [];
-    //tạo danh sách tab
+
+    // Giới hạn số lượng tab hiển thị (tối đa 5 tab)
+    const maxTabs = 11;
     const tabs = [
         { id: 'featured', label: 'Tin Nổi Bật' },
-        ...provinces.map((province) => ({ id: province, label: province })),
+        ...provinces.slice(tabStartIndex, tabStartIndex + maxTabs).map((province) => ({
+            id: province,
+            label: province,
+        })),
     ];
-    //lọc theo tabs
+
+    // Lọc properties theo tab đang chọn
     const filteredProperties = properties
         ? activeTab === 'featured'
-            ? properties // Hiển thị tất cả cho "Tin Nổi Bật"
+            ? properties
             : properties.filter((prop) => extractProvince(prop.location) === activeTab)
         : [];
     const mainProperty = filteredProperties[0] || {};
 
-    if (isLoading) {
-        return <div className="text-center mt-5">Đang tải...</div>;
-    }
+    // Hàm điều hướng tab
+    const handleNextTabs = () => {
+        if (tabStartIndex + maxTabs < provinces.length) {
+            setTabStartIndex(tabStartIndex + 1);
+        }
+    };
 
-    if (isError || !properties) {
-        return <div className="text-center mt-5">Lỗi khi tải dữ liệu bất động sản.</div>;
-    }
+    const handlePrevTabs = () => {
+        if (tabStartIndex > 0) {
+            setTabStartIndex(tabStartIndex - 1);
+        }
+    };
 
     return (
         <div className={`container-fluid ${styles.section}`}>
-         
-            <ul className="nav nav-tabs mb-3">
-                {tabs.map((tab) => (
-                    <li className="nav-item" key={tab.id}>
-                        <button
-                            className={`${styles.navLink} ${activeTab === tab.id ? styles.navLinkActive : ''}`}
-                            onClick={() => setActiveTab(tab.id)}
-                        >
-                            {tab.label}
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <div className="d-flex align-items-center mb-3">
+                {/* Nút điều hướng trái */}
+                <button
+                    className={styles.navButton}
+                    onClick={handlePrevTabs}
+                    disabled={tabStartIndex === 0}
+                >
+                    &larr;
+                </button>
+
+                {/* Danh sách tab */}
+                <ul className="nav nav-tabs flex-grow-1">
+                    {tabs.map((tab) => (
+                        <li className="nav-item" key={tab.id}>
+                            <button
+                                className={`${styles.navLink} ${activeTab === tab.id ? styles.navLinkActive : ''}`}
+                                onClick={() => setActiveTab(tab.id)}
+                            >
+                                {truncateText(tab.label, 20)} {/* Rút gọn tên tỉnh */}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+
+                {/* Nút điều hướng phải */}
+                <button
+                    className={styles.navButton}
+                    onClick={handleNextTabs}
+                    disabled={tabStartIndex + maxTabs >= provinces.length}
+                >
+                    &rarr;
+                </button>
+            </div>
+
             <div className="row">
                 <div className="col-md">
                     <div className="row" style={{ justifyContent: 'space-between' }}>
                         <div className="col-md-6">
                             <Link to={`/product/${mainProperty.id}`} className={styles.mainArticle}>
-
                                 {mainProperty.images && mainProperty.images.length > 0 ? (
                                     <img
                                         src={mainProperty.images[0]}
@@ -73,10 +112,16 @@ const MainContent = ({ properties, isLoading, isError }) => {
                                         className={`${styles.articleImage} img-fluid mb-2`}
                                     />
                                 )}
-                                <h2 className={styles.articleTitle}>{mainProperty.title}</h2>
-                                <p className={styles.articleDescription}>{mainProperty.description}</p>
+                                <h2 className={styles.articleTitle}>
+                                    {truncateText(mainProperty.title, 50)} {/* Rút gọn tiêu đề */}
+                                </h2>
+                                <p className={styles.articleDescription}>
+                                    {truncateText(mainProperty.description, 50)} {/* Rút gọn mô tả */}
+                                </p>
                                 <div className="d-flex justify-content-between">
-                                    <p className={styles.articleDescription}>Type: <i>{mainProperty.type}</i></p>
+                                    <p className={styles.articleDescription}>
+                                        Type: <i>{mainProperty.type}</i>
+                                    </p>
                                     <p className={styles.articleTime}>
                                         {mainProperty.createdat
                                             ? new Date(mainProperty.createdat).toLocaleDateString('vi-VN')
@@ -100,10 +145,14 @@ const MainContent = ({ properties, isLoading, isError }) => {
                                     filteredProperties.map((prop) => (
                                         <li key={prop.id} className={styles.articleListItem}>
                                             <Link to={`/product/${prop.id}`} className={styles.articleListLink}>
-                                                {prop.title}
-                                                <p className={styles.articleDescription}>{prop.description}</p>
+                                                {truncateText(prop.title, 50)} {/* Rút gọn tiêu đề */}
+                                                <p className={styles.articleDescription}>
+                                                    {truncateText(prop.description, 60)} {/* Rút gọn mô tả */}
+                                                </p>
                                                 <div className="d-flex justify-content-between">
-                                                    <p className={styles.articleDescription}>Type: <i>{prop.type}</i></p>
+                                                    <p className={styles.articleDescription}>
+                                                        Type: <i>{prop.type}</i>
+                                                    </p>
                                                     <p className={styles.articleTime}>
                                                         {prop.createdat
                                                             ? new Date(prop.createdat).toLocaleDateString('vi-VN')
@@ -120,7 +169,7 @@ const MainContent = ({ properties, isLoading, isError }) => {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 };
 

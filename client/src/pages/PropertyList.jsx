@@ -4,7 +4,7 @@ import styles from './PropertyList.module.css';
 import { useGetPropertiesQuery, useAddFavoriteMutation, useRemoveFavoriteMutation, useGetFavoritesQuery } from '../api/apiSlice';
 import Toast from '../components/Toast/Toast';
 
-const PropertyList = ({ properties, isLoading, isError }) => {
+const PropertyList = ({ properties}) => {
     const { data: favorites, isLoading: isFavoritesLoading } = useGetFavoritesQuery();
     const [addFavorite] = useAddFavoriteMutation();
     const [removeFavorite] = useRemoveFavoriteMutation();
@@ -45,13 +45,6 @@ const PropertyList = ({ properties, isLoading, isError }) => {
         }
     }, [toast]);
 
-    if (isLoading || isFavoritesLoading) {
-        return <div className={styles.loading}>Đang tải...</div>;
-    }
-
-    if (isError) {
-        return <div className={styles.error}>Lỗi khi tải dữ liệu bất động sản!</div>;
-    }
 
     if (properties.length === 0) {
         return <div className={styles.empty}>Không có bất động sản nào để hiển thị.</div>;

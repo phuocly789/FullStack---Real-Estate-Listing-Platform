@@ -6,7 +6,7 @@ import Toast from '../../Toast/Toast';
 
 const SimilarProperties = ({ currentId }) => {
     // Gọi tất cả hook ở cấp cao nhất
-    const { data, isLoading, isError, isFetching } = useGetPropertiesQuery({ page: 1, limit: 50 });
+    const { data, isLoading, isError,  } = useGetPropertiesQuery({ page: 1, limit: 50 });
     const { data: favorites, isLoading: isFavoritesLoading } = useGetFavoritesQuery();
     const [addFavorite] = useAddFavoriteMutation();
     const [removeFavorite] = useRemoveFavoriteMutation();
@@ -58,13 +58,26 @@ const SimilarProperties = ({ currentId }) => {
     };
 
     // Kiểm tra điều kiện sau khi gọi tất cả hook
-    if (isLoading && !isFetching || isFavoritesLoading) {
-        return <div className={styles.loading}>Loading......</div>;
-    }
-
-    if (isError) {
-        return <div className={styles.error}>Lỗi khi tải dữ liệu bất động sản!</div>;
-    }
+    // Kiểm tra trạng thái loading hoặc error
+     if (isLoading ) {
+         return (
+             <div className={styles.loaderContainer}>
+                 <div className={styles.spinner}></div>
+                 <p>Đang tải dữ liệu...</p>
+             </div>
+         );
+     }
+ 
+     if (isError) {
+         return (
+             <div className={styles.errorContainer}>
+                 <p>Lỗi: Không thể tải dữ liệu bất động sản hoặc danh sách yêu thích.</p>
+                 <button className={`btn btn-primary ${styles.retryBtn}`} onClick={() => window.location.reload()}>
+                     Thử lại
+                 </button>
+             </div>
+         );
+     }
 
     if (!properties || properties.length === 0) {
         return <div className={styles.empty}>Không có dữ liệu để hiển thị.</div>;

@@ -81,3 +81,17 @@
   border-bottom: 2px solid #ff0000;
   border-radius: 0;
 }
+
+.navButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  padding: 0 10px;
+  cursor: pointer;
+  color: #cccccc;
+}
+
+.navButton:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
