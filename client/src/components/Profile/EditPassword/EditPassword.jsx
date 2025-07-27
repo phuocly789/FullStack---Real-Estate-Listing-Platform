@@ -34,6 +34,11 @@ const EditPassword = ({ onUpdateSuccess }) => {
         setToast({ message: '', type: '' });
         setIsSuccess(null);
 
+        // Xác nhận trước khi đổi mật khẩu
+        const confirmChange = window.confirm('Bạn có chắc chắn muốn đổi mật khẩu?');
+        if (!confirmChange) return;
+
+        // Kiểm tra hợp lệ
         if (form.newPassword !== form.confirmPassword) {
             setToast({ message: 'Mật khẩu mới và xác nhận mật khẩu không khớp', type: 'error' });
             setIsSuccess(false);
@@ -51,14 +56,17 @@ const EditPassword = ({ onUpdateSuccess }) => {
                 oldPassword: form.oldPassword,
                 newPassword: form.newPassword,
             }).unwrap();
-            setToast({ message: 'Đổi mật khẩu thành công', type: 'success' });
+
+            // Hiển thị thông báo
+            setToast({ message: 'Đổi mật khẩu thành công. Hệ thống sẽ tự động đăng xuất...', type: 'success' });
             setIsSuccess(true);
             setForm({ oldPassword: '', newPassword: '', confirmPassword: '' });
+
+            // Đăng xuất sau 2s
             setTimeout(() => {
-                if (onUpdateSuccess) {
-                    onUpdateSuccess();
-                }
-            }, 1500);
+                localStorage.removeItem('token');
+                navigate('/login');
+            }, 2000);
         } catch (error) {
             setToast({
                 message: error.data?.message || 'Đổi mật khẩu thất bại! Vui lòng thử lại.',
@@ -67,6 +75,7 @@ const EditPassword = ({ onUpdateSuccess }) => {
             setIsSuccess(false);
         }
     };
+
 
     const handleDeleteAccount = async () => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác.')) {

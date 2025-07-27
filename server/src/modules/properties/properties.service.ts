@@ -23,6 +23,7 @@ export class PropertiesService {
     location?: string;
     priceSort?: 'asc' | 'desc';
     areaSort?: 'asc' | 'desc';
+     createdAtSort?: 'asc' | 'desc';
     page?: number;
     limit?: number;
   }) {
@@ -34,6 +35,7 @@ export class PropertiesService {
     const orderBy: Prisma.propertyOrderByWithRelationInput[] = [];
     if (filters.priceSort) orderBy.push({ price: filters.priceSort });
     if (filters.areaSort) orderBy.push({ area: filters.areaSort });
+  if (filters.createdAtSort) orderBy.push({ createdat: filters.createdAtSort });
   
     const skip = filters.page && filters.limit ? (filters.page - 1) * filters.limit : undefined;
     const take = filters.limit;

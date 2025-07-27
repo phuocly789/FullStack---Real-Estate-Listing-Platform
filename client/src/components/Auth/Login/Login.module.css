@@ -133,3 +133,30 @@ button:hover {
   background: #ff0000;
   border-radius: 50%;
 }
+
+.passwordContainer {
+  position: relative;
+  width: 100%;
+}
+
+.passwordContainer input {
+  width: 100%;
+  padding-right: 80px;
+  /* Chừa chỗ cho nút */
+}
+
+.showPassword {
+  position: absolute;
+  right: 10px;
+  top: 27%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #000000;
+  cursor: pointer;
+  font-size: 14px;
+}
+.showPassword:hover{
+  color: #ff0000;
+  background: none;
+}

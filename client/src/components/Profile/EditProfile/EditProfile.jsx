@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './EditProfile.module.css';
 import { useUpdateProfileMutation } from '../../../api/apiSlice';
+import Toast from '../../Toast/Toast';
 
 const EditProfile = ({ user, onUpdateSuccess }) => {
     const [formData, setFormData] = useState({
@@ -9,9 +10,8 @@ const EditProfile = ({ user, onUpdateSuccess }) => {
         phone: '',
         avatar: '',
     });
-    const [message, setMessage] = useState('');
+    const [toast, setToast] = useState({ message: '', type: '' });
     const [isSuccess, setIsSuccess] = useState(null);
-    const [showSecondaryPhone, setShowSecondaryPhone] = useState(false);
     const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
     useEffect(() => {
@@ -25,16 +25,59 @@ const EditProfile = ({ user, onUpdateSuccess }) => {
         }
     }, [user]);
 
+    const validatePhone = (phone) => {
+        return /^0[0-9]{9}$/.test(phone);
+    };
+
+    const validateImageUrl = (url) => {
+        return /.*\.(jpg|jpeg|png|webp|gif)$/i.test(url) || url === '';
+    };
+
+    const validateName = (name) => {
+        return /^[a-zA-ZÀ-ỹ\s]+$/.test(name.trim());
+    };
+
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+
+        // Lọc ký tự cho phone (chỉ cho phép số)
+        if (name === 'phone') {
+            const filteredValue = value.replace(/[^0-9]/g, '');
+            setFormData({ ...formData, [name]: filteredValue });
+            return;
+        }
+
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setMessage('');
+        setToast({ message: '', type: '' });
+        setIsSuccess(null);
+        const confirmChange = window.confirm('Bạn có chắc chắn muốn sửa thông tin?');
+        if (!confirmChange) return;
+        // Kiểm tra họ tên
+        if (!validateName(formData.name)) {
+            setToast({ message: 'Họ tên chỉ được chứa chữ cái và khoảng trắng!', type: 'error' });
+            setIsSuccess(false);
+            return;
+        }
+
+        // Kiểm tra số điện thoại nếu có nhập
+        if (formData.phone && !validatePhone(formData.phone)) {
+            setToast({ message: 'Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số!', type: 'error' });
+            setIsSuccess(false);
+            return;
+        }
+
+        // Kiểm tra URL avatar nếu có nhập
+        if (formData.avatar && !validateImageUrl(formData.avatar)) {
+            setToast({ message: 'URL avatar phải là hình ảnh (jpg, jpeg, png, webp, gif)!', type: 'error' });
+            setIsSuccess(false);
+            return;
+        }
 
         try {
-            // Gửi yêu cầu cập nhật thông tin người dùng
             await updateProfile({
                 name: formData.name,
                 email: formData.email,
@@ -42,41 +85,36 @@ const EditProfile = ({ user, onUpdateSuccess }) => {
                 avatar: formData.avatar,
             }).unwrap();
 
-            setMessage('Cập nhật thông tin thành công!');
+            setToast({ message: 'Cập nhật thông tin thành công!', type: 'success' });
             setIsSuccess(true);
 
-            // Xóa thông báo sau 3 giây
             setTimeout(() => {
-                setMessage('');
+                setToast({ message: '', type: '' });
+                setIsSuccess(null);
                 if (onUpdateSuccess) {
                     onUpdateSuccess();
+                } else {
+                    window.location.reload();
                 }
             }, 3000);
         } catch (error) {
-            setMessage(error.data?.message || 'Lỗi khi cập nhật thông tin');
+            const errorMessage = error?.data?.message || 'Lỗi khi cập nhật thông tin';
+            setToast({ message: errorMessage, type: 'error' });
             setIsSuccess(false);
         }
     };
 
-    const handleAddSecondaryPhone = () => {
-        setShowSecondaryPhone(true);
-    };
-
-    // Kiểm tra định dạng số điện thoại
-    const validatePhone = (phone) => {
-        const phoneRegex = /^[0-9]{10,11}$/;
-        return phoneRegex.test(phone);
-    };
-
-
     return (
         <form className={styles.container} onSubmit={handleSubmit}>
-            {/* Thông báo */}
-            {message && (
-                <p className={isSuccess ? styles.success : styles.error}>{message}</p>
-            )}
-
-            {/* Thông tin cá nhân */}
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                isSuccess={isSuccess}
+                onClose={() => {
+                    setToast({ message: '', type: '' });
+                    setIsSuccess(null);
+                }}
+            />
             <section className={styles.section}>
                 <h3>Thông tin cá nhân</h3>
                 <div className={styles.avatarUpload}>
@@ -102,8 +140,6 @@ const EditProfile = ({ user, onUpdateSuccess }) => {
                     </div>
                 </div>
             </section>
-
-            {/* Thông tin liên hệ */}
             <section className={styles.section}>
                 <h3>Thông tin liên hệ</h3>
                 <div className={styles.row}>
@@ -116,7 +152,7 @@ const EditProfile = ({ user, onUpdateSuccess }) => {
                             onChange={handleChange}
                             onBlur={(e) => {
                                 if (e.target.value && !validatePhone(e.target.value)) {
-                                    setMessage('Số điện thoại không hợp lệ (10-11 chữ số)');
+                                    setToast({ message: 'Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số!', type: 'error' });
                                     setIsSuccess(false);
                                 }
                             }}
@@ -129,13 +165,12 @@ const EditProfile = ({ user, onUpdateSuccess }) => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            disabled // Không cho phép chỉnh sửa email trực tiếp
+                            disabled
                         />
                         <small>Email không thể thay đổi trực tiếp. Liên hệ hỗ trợ để cập nhật.</small>
                     </div>
                 </div>
             </section>
-
             <div className={styles.buttonGroup}>
                 <button type="submit" className={styles.saveButton} disabled={isLoading}>
                     {isLoading ? 'Đang lưu...' : 'Lưu thay đổi'}

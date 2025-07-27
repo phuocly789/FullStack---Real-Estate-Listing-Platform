@@ -33,8 +33,12 @@ export const apiSlice = createApi({
       query: () => '/users/profile',
     }),
     getAllUsers: builder.query({
-      query: () => '/users',
-  }),
+      query: (params) => ({
+        url: '/users',
+        params,
+      }),
+    }),
+
     getUserById: builder.query({
       query: (userid) => `/users/${userid}`,
     }),
@@ -134,7 +138,7 @@ export const apiSlice = createApi({
     }),
 
     // Favorites
-     addFavorite: builder.mutation({
+    addFavorite: builder.mutation({
       query: (propertyId) => ({
         url: `/favorites/${propertyId}`,
         method: 'POST',

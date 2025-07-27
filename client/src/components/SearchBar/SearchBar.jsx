@@ -101,10 +101,7 @@ const SearchBar = ({ onSearch, isLoading }) => {
                         disabled={isLoading || isQueryLoading}
                     >
                         {isLoading || isQueryLoading ? (
-                            <div className={styles.loaderContainer}>
-                                <div className={styles.spinner}></div>
                                 <p>Đang tải dữ liệu...</p>
-                            </div>
                         ) : (
                             'Tìm kiếm'
                         )}

@@ -78,7 +78,7 @@ const MainContent = ({ properties }) => {
                                 className={`${styles.navLink} ${activeTab === tab.id ? styles.navLinkActive : ''}`}
                                 onClick={() => setActiveTab(tab.id)}
                             >
-                                {truncateText(tab.label, 20)} {/* Rút gọn tên tỉnh */}
+                                {truncateText(tab.label, 19)} {/* Rút gọn tên tỉnh */}
                             </button>
                         </li>
                     ))}
@@ -113,10 +113,10 @@ const MainContent = ({ properties }) => {
                                     />
                                 )}
                                 <h2 className={styles.articleTitle}>
-                                    {truncateText(mainProperty.title, 50)} {/* Rút gọn tiêu đề */}
+                                    {truncateText(mainProperty.title, 38)} {/* Rút gọn tiêu đề */}
                                 </h2>
                                 <p className={styles.articleDescription}>
-                                    {truncateText(mainProperty.description, 50)} {/* Rút gọn mô tả */}
+                                    {truncateText(mainProperty.description, 72)} {/* Rút gọn mô tả */}
                                 </p>
                                 <div className="d-flex justify-content-between">
                                     <p className={styles.articleDescription}>

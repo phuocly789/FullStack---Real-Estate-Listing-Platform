@@ -1,7 +1,32 @@
 import React from 'react';
+import { useGetProfileQuery } from '../../api/apiSlice';
 import styles from './Footer.module.css';
 
+// Danh sách liên kết công khai
+const Tabs = [
+    { name: 'Trang Chủ', link: '/' },
+    { name: 'Bất Động Sản', link: '/collection' },
+];
+
+// Danh sách liên kết quản trị
+const TabsAdmin = [
+    { name: 'Dashboard', link: '/admin' },
+    { name: 'Properties', link: '/admin_properties' },
+    { name: 'Users', link: '/admin_users' },
+    { name: 'Contacts', link: '/admin_contacts' },
+];
+
 const Footer = () => {
+    const { data: user, isError } = useGetProfileQuery(undefined, {
+        skip: !localStorage.getItem('token'),
+    });
+
+    // Xử lý lỗi token không hợp lệ
+    if (isError && localStorage.getItem('token')) {
+        localStorage.removeItem('token');
+        window.location.reload();
+    }
+
     return (
         <footer className={styles.footer}>
             <div className={styles.container}>
@@ -12,9 +37,19 @@ const Footer = () => {
                 <div className={styles.column}>
                     <h5>Liên kết nhanh</h5>
                     <ul>
-                        <li><a href="/">Trang chủ</a></li>
-                        <li><a href="/collection">Bất Động Sản</a></li>
-                    
+                        {user?.role === 'ADMIN' ? (
+                            TabsAdmin.map((tab) => (
+                                <li key={tab.link}>
+                                    <a href={tab.link}>{tab.name}</a>
+                                </li>
+                            ))
+                        ) : (
+                            Tabs.map((tab) => (
+                                <li key={tab.link}>
+                                    <a href={tab.link}>{tab.name}</a>
+                                </li>
+                            ))
+                        )}
                     </ul>
                 </div>
                 <div className={styles.column}>

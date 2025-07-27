@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -87,11 +88,29 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { email } });
   }
 
-  async findAll() {
-    return this.prisma.user.findMany({
-      select: { id: true, name: true, email: true, phone: true, role: true,createdAt:true, avatar:true},
-    });
-  }
+ async findAll(sort?: string) {
+const orderBy: Prisma.UserOrderByWithRelationInput = sort
+  ? {
+      [sort.replace('-', '')]: sort.startsWith('-')
+        ? Prisma.SortOrder.desc
+        : Prisma.SortOrder.asc,
+    }
+  : { createdAt: Prisma.SortOrder.asc };
+
+
+  return this.prisma.user.findMany({
+    orderBy,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      createdAt: true,
+      avatar: true,
+    },
+  });
+}
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {

@@ -36,7 +36,7 @@ const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light w-100 fixed-top mb-4">
             <div className="w-100 d-flex flex-wrap align-items-center justify-content-between px-4">
-                <a className="navbar-brand" href="/">Real Estate</a>
+                <a className="navbar-brand" href={user?.role==='ADMIN'?"/admin":"/"}>Real Estate</a>
                 <button
                     className="navbar-toggler"
                     type="button"

@@ -1,93 +1,123 @@
 .container {
-    width: 320px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-    padding: 20px;
-    text-align: center;
-    overflow: hidden;
-    position: relative;
+  width: 320px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.formContainer {
+  transition: all 0.5s ease;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slideIn {
+  animation: slideIn 0.5s forwards;
+}
+
+.slideOut {
+  animation: slideOut 0.5s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30%);
   }
-  
-  .formContainer {
-    transition: all 0.5s ease;
+
+  to {
     opacity: 1;
     transform: translateX(0);
   }
-  
-  .slideIn {
-    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 0;
+    transform: translateX(30%);
   }
-  
-  .slideOut {
-    animation: slideOut 0.5s forwards;
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-30%);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  @keyframes slideOut {
-    from {
-      opacity: 0;
-      transform: translateX(30%);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  .biArrowLeft{
-    position: absolute;
-    left: 2px;
-    top: -3px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #000000;
-  }
-  .form {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-  
-  input {
-    margin: 10px 0;
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-  }
-  
-  button {
-    margin-top: 15px;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .switchButton {
-    margin-top: 15px;
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  
+}
+
+.biArrowLeft {
+  position: absolute;
+  left: 2px;
+  top: -3px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #000000;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+input {
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.switchButton {
+  margin-top: 15px;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.passwordContainer {
+  position: relative;
+  width: 100%;
+}
+
+.passwordContainer input {
+  width: 100%;
+  padding-right: 80px;
+}
+
+.showPassword {
+  position: absolute;
+  right: 10px;
+  top: 25%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #030000;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.showPassword:hover{
+  color: #ff0000;
+  background:none;
+}

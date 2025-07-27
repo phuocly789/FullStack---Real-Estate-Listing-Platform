@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGetProfileQuery, useGetContactsQuery, useUpdateContactMutation, useDeleteContactMutation } from '../../../api/apiSlice';
 import { skipToken } from '@reduxjs/toolkit/query/react';
 import Navbar from '../../Navbar/Navbar';
@@ -6,6 +6,7 @@ import Footer from '../../Footer/Footer';
 import { Modal, Button, Form } from 'react-bootstrap';
 import styles from './AdminContact.module.css';
 import Toast from '../../Toast/Toast';
+import ConfirmModal from '../../ConfirmModal/ConfirmModal';
 
 const AdminContact = () => {
     const { data: profile = {} } = useGetProfileQuery();
@@ -21,6 +22,35 @@ const AdminContact = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedContact, setSelectedContact] = useState(null);
     const [replyMessage, setReplyMessage] = useState('');
+    // Xóa
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+    // Phân trang
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 5;
+    const totalPages = Math.ceil(contacts.length / itemsPerPage);
+
+    // Hàm xử lý phân trang
+    const handlePrevPage = () => {
+        if (page > 1) {
+            setPage(page - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (page < totalPages) {
+            setPage(page + 1);
+        }
+    };
+
+    // Đặt lại trang khi totalPages thay đổi
+    useEffect(() => {
+        if (page > totalPages && totalPages > 0) {
+            setPage(totalPages);
+        } else if (totalPages === 0) {
+            setPage(1);
+        }
+    }, [contacts.length, page, totalPages]);
 
     // Hàm định dạng ngày giờ
     const formatDate = (dateString) => {
@@ -42,7 +72,7 @@ const AdminContact = () => {
     // Mở modal và lưu thông tin contact
     const handleOpenModal = (contact) => {
         setSelectedContact(contact);
-        setReplyMessage(contact.replymessage || ''); // Khởi tạo với replymessage hiện tại
+        setReplyMessage(contact.replymessage || '');
         setShowModal(true);
     };
 
@@ -50,7 +80,7 @@ const AdminContact = () => {
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedContact(null);
-        setReplyMessage(selectedContact?.replymessage || '');
+        setReplyMessage('');
         refetch();
     };
 
@@ -79,18 +109,21 @@ const AdminContact = () => {
     };
 
     // Xóa liên hệ
-    const handleDelete = async (id) => {
-        console.log('Deleting contact with ID:', id, 'Type:', typeof id);
+    const handleDelete = async () => {
+        const id = selectedDeleteId;
+
         if (!Number.isInteger(Number(id))) {
             setToast({ message: 'ID liên hệ không hợp lệ!', type: 'error' });
             setIsSuccess(false);
             return;
         }
+
         try {
-            const response = await deleteContact(Number(id)).unwrap();
-            console.log('Delete API Response:', response);
+            await deleteContact(Number(id)).unwrap();
             setToast({ message: 'Đã xóa liên hệ!', type: 'success' });
             setIsSuccess(true);
+            setShowConfirm(false);
+            setSelectedDeleteId(null);
             refetch();
         } catch (error) {
             console.error('Delete API Error:', error);
@@ -99,7 +132,32 @@ const AdminContact = () => {
                 type: 'error',
             });
             setIsSuccess(false);
+            setShowConfirm(false);
         }
+    };
+
+    // Modal xóa
+    const openConfirmDelete = (id) => {
+        setSelectedDeleteId(id);
+        setShowConfirm(true);
+    };
+
+    useEffect(() => {
+        if (toast.message) {
+            const timer = setTimeout(() => {
+                setToast({ message: '', type: '' });
+                setIsSuccess(null);
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [toast.message]);
+
+    const isAnyLoading = loadingContacts || replying || deleting;
+
+    const truncateText = (text, maxLength) => {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
     };
 
     return (
@@ -120,7 +178,7 @@ const AdminContact = () => {
                     <div className="col-md-4 col-lg-3 mb-3">
                         <div className={`card text-white bg-warning ${styles.card}`}>
                             <div className="card-body">
-                                <h5 className="card-title">Tổng Yêu Cầu Liên Hệ</h5>
+                                <h5 className="card-title">Tổng Báo Cáo</h5>
                                 <p className="card-text display-6">
                                     {loadingContacts ? '...' : contacts.length}
                                 </p>
@@ -162,74 +220,127 @@ const AdminContact = () => {
                                         </td>
                                     </tr>
                                 ) : (
-                                    contacts.map((contact) => (
-                                        <tr
-                                            key={contact.id}
-                                            className={
-                                                contact.status === 'PENDING'
-                                                    ? styles.pendingRow
-                                                    : styles.respondedRow
+                                    [...contacts]
+                                        .sort((a, b) => {
+                                            if (a.status !== b.status) {
+                                                return a.status === 'PENDING' ? -1 : 1;
                                             }
-                                        >
-                                            <td>{contact.User?.name || 'N/A'}</td>
-                                            <td>{contact.User?.email || 'N/A'}</td>
-                                            <td>{contact.message}</td>
-                                            <td>{contact.replymessage || 'Chưa có phản hồi'}</td>
-                                            <td>{contact.property?.title || 'N/A'}</td>
-                                            <td>
-                                                <span
-                                                    className={
-                                                        contact.status === 'PENDING'
-                                                            ? styles.statusPending
-                                                            : contact.status === 'RESPONDED'
-                                                                ? styles.statusResponded
-                                                                : styles.statusClosed
-                                                    }
-                                                >
-                                                    {contact.status}
-                                                </span>
-                                                {/* {contact.status === 'RESPONDED' & contact.updatedat != contact.createdat && (
-                                                    <div>Đã Chỉnh Sửa</div>
-                                                )} */}
-                                            </td>
-                                            <td>{formatDate(contact.createdat)}</td>
-                                            <td>
-                                                {contact.status === 'PENDING' ? (
-                                                    <Button
-                                                        variant="primary"
-                                                        size="sm"
-                                                        onClick={() => handleOpenModal(contact)}
-                                                        className={styles.actionButton}
+                                            return new Date(b.createdat) - new Date(a.createdat);
+                                        })
+                                        .slice((page - 1) * itemsPerPage, page * itemsPerPage)
+                                        .map((contact) => (
+                                            <tr
+                                                key={contact.id}
+                                                className={
+                                                    contact.status === 'PENDING'
+                                                        ? styles.pendingRow
+                                                        : styles.respondedRow
+                                                }
+                                            >
+                                                <td>{contact.User?.name || 'N/A'}</td>
+                                                <td>{truncateText(contact.User?.email, 16) || 'N/A'}</td>
+                                                <td>{truncateText(contact.message, 50)}</td>
+                                                <td>{truncateText(contact.replymessage, 50) || 'Chưa có phản hồi'}</td>
+                                                <td>{truncateText(contact.property?.title, 50 || 'N/A')}</td>
+                                                <td>
+                                                    <span
+                                                        className={
+                                                            contact.status === 'PENDING'
+                                                                ? styles.statusPending
+                                                                : contact.status === 'RESPONDED'
+                                                                    ? styles.statusResponded
+                                                                    : styles.statusClosed
+                                                        }
                                                     >
-                                                        Trả lời
-                                                    </Button>
-                                                ) : (
+                                                        {contact.status}
+                                                    </span>
+                                                </td>
+                                                <td>{formatDate(contact.createdat)}</td>
+                                                <td>
+                                                    {contact.status === 'PENDING' ? (
+                                                        <Button
+                                                            variant="primary"
+                                                            size="sm"
+                                                            onClick={() => handleOpenModal(contact)}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            Trả lời
+                                                        </Button>
+                                                    ) : (
+                                                        <Button
+                                                            variant="primary"
+                                                            size="sm"
+                                                            onClick={() => handleOpenModal(contact)}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            Chỉnh sửa
+                                                        </Button>
+                                                    )}
                                                     <Button
-                                                        variant="primary"
+                                                        variant="danger"
                                                         size="sm"
-                                                        onClick={() => handleOpenModal(contact)}
-                                                        className={styles.actionButton}
+                                                        className={`ms-2 ${styles.actionButton}`}
+                                                        onClick={() => openConfirmDelete(contact.id)}
+                                                        disabled={deleting}
                                                     >
-                                                        Chỉnh sửa
+                                                        {deleting ? 'Đang xóa...' : 'Xóa'}
                                                     </Button>
-                                                )}
-                                                <Button
-                                                    variant="danger"
-                                                    size="sm"
-                                                    className={`ms-2 ${styles.actionButton}`}
-                                                    onClick={() => handleDelete(contact.id)}
-                                                    disabled={deleting}
-                                                >
-                                                    {deleting ? 'Đang xóa...' : 'Xóa'}
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))
+                                                </td>
+                                            </tr>
+                                        ))
                                 )}
                             </tbody>
                         </table>
                     </div>
                 </div>
+
+                {/* Phân trang */}
+                {totalPages > 1 && contacts.length > 0 && (
+                    <div className="d-flex justify-content-center my-4">
+                        <button
+                            onClick={handlePrevPage}
+                            className="btn btn-outline-primary mx-2"
+                            disabled={page === 1}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24px"
+                                viewBox="0 -960 960 960"
+                                width="24px"
+                                fill="#1f1f1f"
+                            >
+                                <path d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z" />
+                            </svg>
+                        </button>
+                        {[...Array(totalPages)].map((_, index) => {
+                            const pageNumber = index + 1;
+                            return (
+                                <button
+                                    key={pageNumber}
+                                    className={`btn mx-1 ${pageNumber === page ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    onClick={() => setPage(pageNumber)}
+                                >
+                                    {pageNumber}
+                                </button>
+                            );
+                        })}
+                        <button
+                            onClick={handleNextPage}
+                            className="btn btn-outline-primary mx-2"
+                            disabled={page === totalPages}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24px"
+                                viewBox="0 -960 960 960"
+                                width="24px"
+                                fill="#1f1f1f"
+                            >
+                                <path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Modal trả lời */}
@@ -237,6 +348,15 @@ const AdminContact = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Trả Lời Yêu Cầu Liên Hệ</Modal.Title>
                 </Modal.Header>
+                    <Toast
+                        message={toast.message}
+                        type={toast.type}
+                        isSuccess={isSuccess}
+                        onClose={() => {
+                            setToast({ message: '', type: '' });
+                            setIsSuccess(null);
+                        }}
+                    />
                 <Modal.Body>
                     {selectedContact && (
                         <Form>
@@ -295,7 +415,17 @@ const AdminContact = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
+            <ConfirmModal
+                show={showConfirm}
+                onClose={() => setShowConfirm(false)}
+                onConfirm={handleDelete}
+                message="Bạn có chắc chắn muốn xóa yêu cầu liên hệ này?"
+            />
+            {isAnyLoading && (
+                <div className={styles.loadingOverlay}>
+                    <div className={styles.spinner}></div>
+                </div>
+            )}
             <Footer />
         </>
     );

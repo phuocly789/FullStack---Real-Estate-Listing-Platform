@@ -9,7 +9,7 @@ import ConfirmModal from '../../ConfirmModal/ConfirmModal';
 const AdminProperties = () => {
     const [page, setPage] = useState(1);
     const limit = 8;
-    const { data = [], isLoading: loadingProperties, refetch } = useGetPropertiesQuery({ page, limit }, { refetchOnMountOrArgChange: true });
+    const { data = [], isLoading: loadingProperties, refetch } = useGetPropertiesQuery({ page, limit, createdAtSort: 'desc' }, { refetchOnMountOrArgChange: true });
     const properties = data?.properties || [];
     //
     const totalCount = data?.totalCount || 0;
@@ -20,7 +20,7 @@ const AdminProperties = () => {
     const handlePrevPage = () => page > 1 && setPage((prev) => prev - 1);
     //
     const navigate = useNavigate();
-    const [deleteProperty] = useDeletePropertyMutation();
+    const [deleteProperty,{isLoading:loadingDelete}] = useDeletePropertyMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
     const [isSuccess, setIsSuccess] = useState(null);
     //
@@ -52,11 +52,21 @@ const AdminProperties = () => {
             setIsSuccess(false);
         }
     };
+    const isAnyLoading = loadingProperties || loadingDelete ;
 
+    const truncateText = (text, maxLength) => {
+        if (!text) return '';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    };
     return (
         <>
             <Navbar />
             <div className="container mt-5 pt-5">
+                {isAnyLoading && (
+                    <div className={styles.loadingOverlay}>
+                        <div className={styles.spinner}></div>
+                    </div>
+                )}
                 <h2 className="mb-4">Trang Quản Trị Properties</h2>
                 <Toast
                     message={toast.message}
@@ -74,16 +84,16 @@ const AdminProperties = () => {
 
                 {/* Cards thống kê */}
                     <div className="row mb-4">
-                        {/* <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
+                        <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
                             <div className="card text-white bg-primary">
                                 <div className="card-body">
                                     <h5 className="card-title">Tổng BĐS</h5>
                                     <p className="card-text display-6">
-                                        {loadingProperties ? '...' : properties.length}
+                                        {loadingProperties ? '...' : data?.totalCount}
                                     </p>
                                 </div>
                             </div>
-                        </Link> */}
+                        </Link>
 
                         <div className="card">
                             <div className="card-header d-flex justify-content-between">
@@ -115,15 +125,15 @@ const AdminProperties = () => {
                                         ) : (
                                             properties.map((property) => (
                                                 <tr key={property.id} className={styles.fadeInRow}>
-                                                    <td>{property.title}</td>
+                                                    <td>{truncateText(property.title,40)}</td>
                                                     <td>{property.type}</td>
                                                     <td>{property.area} m2</td>
-                                                    <td>{property.location}</td>
+                                                    <td>{truncateText(property.location,20)}</td>
                                                     <td className={styles.img}><img src={property.images[0]} alt="" /></td>
                                                     <td>{property.bedrooms}</td>
                                                     <td>{property.bathrooms}</td>
-                                                    <td className={styles.description}>{property.description}</td>
-                                                    <td>{property.price.toLocaleString()}đ</td>
+                                                    <td className={styles.description}>{truncateText(property.description,20)}</td>
+                                                    <td>{truncateText(property.price.toLocaleString(),20)}đ</td>
                                                     <td>
                                                         {property.createdat
                                                             ? new Date(property.createdat).toLocaleDateString('vi-VN')
@@ -215,6 +225,11 @@ const AdminProperties = () => {
                 onConfirm={handleDelete}
                 message="Bạn có chắc chắn muốn xoá bất động sản này?"
             />
+            {isAnyLoading && (
+                <div className={styles.loadingOverlay}>
+                    <div className={styles.spinner}></div>
+                </div>
+            )}
             <Footer />
         </>
     )

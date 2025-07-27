@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -39,9 +39,9 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    return this.usersService.findAll();
-  }
+async findAll(@Request() req, @Query('sort') sort?: string) {
+  return this.usersService.findAll(sort);
+}
 
   // @UseGuards(JwtAuthGuard)
   @Get(':id')

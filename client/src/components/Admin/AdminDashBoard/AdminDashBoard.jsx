@@ -1,36 +1,57 @@
 import React, { useEffect } from 'react';
 import { useGetAllUsersQuery, useGetPropertiesQuery, useGetContactsQuery, useGetProfileQuery } from '../../../api/apiSlice';
 import { Link } from 'react-router-dom';
-import styles from './AdminDashBoard.module.css'
+import { skipToken } from '@reduxjs/toolkit/query/react';
+import styles from './AdminDashBoard.module.css';
+
 const AdminDashBoard = () => {
-    const { data: users = [], isLoading: loadingUsers } = useGetAllUsersQuery();
-    const { data: propertiesJson = [], isLoading: loadingProperties } = useGetPropertiesQuery({}, { refetchOnMountOrArgChange: true });
-    const { data: profile = [] } = useGetProfileQuery();
+    const { data: users = [], isLoading: loadingUsers } = useGetAllUsersQuery(
+        { page: 1, limit: 5, sort: '-createdAt' }
+    );
+    const { data: propertiesJson = {}, isLoading: loadingProperties } = useGetPropertiesQuery(
+        { page: 1, limit: 5, createdAtSort: 'desc' }
+    );
+    const { data: profile = {} } = useGetProfileQuery();
     const { data: contacts = [], isLoading: loadingContacts } = useGetContactsQuery(
         profile ? { userid: profile.userid, role: profile.role } : skipToken
     );
     const properties = propertiesJson?.properties || [];
-    console.log(contacts);
+
+    // Kiểm tra trạng thái loading tổng thể
+    const isAnyLoading = loadingUsers || loadingProperties || loadingContacts;
+
+    // Hàm rút gọn văn bản
+    const truncateText = (text, maxLength) => {
+        if (!text) return 'N/A';
+        return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    };
 
     return (
-        <div className="container mt-5 pt-5">
+        <div className={`container mt-5 pt-5 ${styles.container}`}>
+            {/* Hiệu ứng loading toàn màn hình */}
+            {isAnyLoading && (
+                <div className={styles.loadingOverlay}>
+                    <div className={styles.spinner}></div>
+                </div>
+            )}
+
             <h2 className="mb-4">Trang Quản Trị</h2>
 
             {/* Cards thống kê */}
             <div className={`row mb-4`}>
                 <Link to="/admin_properties" className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-primary">
-                        <div className={`card-body `}>
+                        <div className={`card-body`}>
                             <h5 className="card-title">Tổng BĐS</h5>
                             <p className="card-text display-6">
-                                {loadingProperties ? '...' : properties.length}
+                                {loadingProperties ? '...' : propertiesJson?.totalCount}
                             </p>
                         </div>
                     </div>
                 </Link>
-                <Link to={"/admin_users"} className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
+                <Link to="/admin_users" className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-success">
-                        <div className={`card-body `}>
+                        <div className={`card-body`}>
                             <h5 className="card-title">Tổng Người Dùng</h5>
                             <p className="card-text display-6">
                                 {loadingUsers ? '...' : users.length}
@@ -38,7 +59,7 @@ const AdminDashBoard = () => {
                         </div>
                     </div>
                 </Link>
-                <Link to={"/admin_contacts"} className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
+                <Link to="/admin_contacts" className={`col-md-4 col-lg-3 mb-3 ${styles.linkCard}`}>
                     <div className="card text-white bg-warning">
                         <div className={`card-body`}>
                             <h5 className="card-title">Tổng Báo Cáo</h5>
@@ -50,7 +71,7 @@ const AdminDashBoard = () => {
                 </Link>
             </div>
 
-            {/* Table danh sách gần đây */}
+            {/* Table danh sách BĐS mới nhất */}
             <div className="card mb-5">
                 <div className="card-header">
                     <strong>Danh sách BĐS mới nhất</strong>
@@ -67,27 +88,34 @@ const AdminDashBoard = () => {
                         </thead>
                         <tbody>
                             {loadingProperties ? (
-                                <tr><td colSpan="4">Đang tải...</td></tr>
+                                <tr><td colSpan="4" className="text-center">Đang tải...</td></tr>
+                            ) : properties.length === 0 ? (
+                                <tr><td colSpan="4" className="text-center">Không có dữ liệu</td></tr>
                             ) : (
-                                properties.slice(0, 5).map((property) => (
-                                    <tr key={property.id}>
-                                        <td>{property.title}</td>
-                                        <td>{property.type}</td>
-                                        <td>{property.price.toLocaleString()}đ</td>
-                                        <td>
-                                            {property.createdat
-                                                ? new Date(property.createdat).toLocaleDateString('vi-VN')
-                                                : 'Không có thời gian'}
-                                        </td>
-                                    </tr>
-                                ))
+                                properties
+                                    .slice()
+                                    .sort((a, b) => new Date(b.createdat) - new Date(a.createdat))
+                                    .slice(0, 5)
+                                    .map((property) => (
+                                        <tr key={property.id}>
+                                            <td>{truncateText(property.title, 30)}</td>
+                                            <td>{property.type}</td>
+                                            <td>{truncateText(property.price.toLocaleString(), 20)}đ</td>
+                                            <td>
+                                                {property.createdat
+                                                    ? new Date(property.createdat).toLocaleDateString('vi-VN')
+                                                    : 'Không có thời gian'}
+                                            </td>
+                                        </tr>
+                                    ))
                             )}
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <div className="card mb-5" >
+            {/* Table danh sách User đăng ký mới */}
+            <div className="card mb-5">
                 <div className="card-header">
                     <strong>Danh sách User đăng ký mới</strong>
                 </div>
@@ -103,26 +131,33 @@ const AdminDashBoard = () => {
                         </thead>
                         <tbody>
                             {loadingUsers ? (
-                                <tr><td colSpan="4">Đang tải...</td></tr>
+                                <tr><td colSpan="4" className="text-center">Đang tải...</td></tr>
+                            ) : users.length === 0 ? (
+                                <tr><td colSpan="4" className="text-center">Không có dữ liệu</td></tr>
                             ) : (
-                                users.slice(0, 5).map((user) => (
-                                    <tr key={user.id}>
-                                        <td>{user.name}</td>
-                                        <td>{user.email}</td>
-                                        <td>{user.role}</td>
-                                        <td>
-                                            {user.createdAt
-                                                ? new Date(user.createdAt).toLocaleDateString('vi-VN')
-                                                : 'Không có thời gian'}
-                                        </td>
-                                    </tr>
-                                ))
+                                users
+                                    .slice()
+                                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                    .slice(0, 5)
+                                    .map((user) => (
+                                        <tr key={user.id}>
+                                            <td>{truncateText(user.name, 20)}</td>
+                                            <td>{truncateText(user.email, 30)}</td>
+                                            <td>{user.role}</td>
+                                            <td>
+                                                {user.createdAt
+                                                    ? new Date(user.createdAt).toLocaleDateString('vi-VN')
+                                                    : 'Không có thời gian'}
+                                            </td>
+                                        </tr>
+                                    ))
                             )}
                         </tbody>
                     </table>
                 </div>
             </div>
 
+            {/* Table danh sách Contacts mới nhất */}
             <div className="card mb-5">
                 <div className="card-header">
                     <strong>Danh sách Contacts mới nhất</strong>
@@ -139,18 +174,42 @@ const AdminDashBoard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {loadingProperties ? (
-                                <tr><td colSpan="4">Đang tải...</td></tr>
+                            {loadingContacts ? (
+                                <tr><td colSpan="5" className="text-center">Đang tải...</td></tr>
+                            ) : contacts.length === 0 ? (
+                                <tr><td colSpan="5" className="text-center">Không có dữ liệu</td></tr>
                             ) : (
-                                contacts.slice(0, 5).map((contact) => (
-                                    <tr key={contact.id}>
-                                        <td>{contact.User.name}</td>
-                                        <td>{contact.User.email}</td>
-                                        <td>{contact.property.title}</td>
-                                        <td>{contact.message}</td>
-                                        <td>{contact.status}</td>
-                                    </tr>
-                                ))
+                                [...contacts]
+                                    .sort((a, b) => {
+                                        if (a.status !== b.status) {
+                                            return a.status === 'PENDING' ? -1 : 1;
+                                        }
+                                        return new Date(b.createdat) - new Date(a.createdat);
+                                    })
+                                    .slice()
+                                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                    .slice(0, 5)
+                                    .map((contact) => (
+                                        <tr key={contact.id}>
+                                            <td>{truncateText(contact.User?.name, 20)}</td>
+                                            <td>{truncateText(contact.User?.email, 30)}</td>
+                                            <td>{truncateText(contact.property?.title, 40)}</td>
+                                            <td>{truncateText(contact.message, 50)}</td>
+                                            <td>
+                                                <span
+                                                    className={
+                                                        contact.status === 'PENDING'
+                                                            ? styles.statusPending
+                                                            : contact.status === 'RESPONDED'
+                                                                ? styles.statusResponded
+                                                                : styles.statusClosed
+                                                    }
+                                                >
+                                                    {contact.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))
                             )}
                         </tbody>
                     </table>

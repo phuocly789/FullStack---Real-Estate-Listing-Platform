@@ -22,12 +22,14 @@ export class PropertiesController {
     @Query('areaSort') areaSort?: 'asc' | 'desc',
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('createdAtSort') createdAtSort?: 'asc' | 'desc',
   ) {
     return this.propertiesService.findAll({
       title,
       location,
       priceSort,
       areaSort,
+        createdAtSort,
       page: page ? parseInt(page) : undefined,
       limit: limit ? parseInt(limit) : undefined,
     });
