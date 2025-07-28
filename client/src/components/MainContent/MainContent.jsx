@@ -28,7 +28,7 @@ const MainContent = ({ properties }) => {
         : [];
 
     // Giới hạn số lượng tab hiển thị (tối đa 5 tab)
-    const maxTabs = 11;
+    const maxTabs = 10;
     const tabs = [
         { id: 'featured', label: 'Tin Nổi Bật' },
         ...provinces.slice(tabStartIndex, tabStartIndex + maxTabs).map((province) => ({
@@ -78,7 +78,7 @@ const MainContent = ({ properties }) => {
                                 className={`${styles.navLink} ${activeTab === tab.id ? styles.navLinkActive : ''}`}
                                 onClick={() => setActiveTab(tab.id)}
                             >
-                                {truncateText(tab.label, 19)} {/* Rút gọn tên tỉnh */}
+                                {truncateText(tab.label, 17)} {/* Rút gọn tên tỉnh */}
                             </button>
                         </li>
                     ))}
@@ -88,7 +88,7 @@ const MainContent = ({ properties }) => {
                 <button
                     className={styles.navButton}
                     onClick={handleNextTabs}
-                    disabled={tabStartIndex + maxTabs >= provinces.length}
+                    disabled={tabStartIndex + maxTabs > provinces.length}
                 >
                     &rarr;
                 </button>

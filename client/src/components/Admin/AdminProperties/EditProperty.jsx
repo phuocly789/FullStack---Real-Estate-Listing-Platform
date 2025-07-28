@@ -3,12 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useGetPropertyQuery, useUpdatePropertyMutation } from '../../../api/apiSlice';
 import PropertyForm from './PropertyForm'; // component form dùng chung
 import Toast from '../../Toast/Toast';
-
+import styles from './EditProperty.module.css'
 const EditProperty = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { data: property, isLoading } = useGetPropertyQuery(id);
-    const [updateProperty] = useUpdatePropertyMutation();
+    const [updateProperty, { isLoading: loadingEdit }] = useUpdatePropertyMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
     const handleSubmit = async (values) => {
         try {
@@ -25,7 +25,7 @@ const EditProperty = () => {
             }, 3000);
         }
     };
-
+    const isAnyLoading = isLoading || loadingEdit;
 
     return (
         <div className="container mt-5">
@@ -40,6 +40,13 @@ const EditProperty = () => {
             {!isLoading && property && (
                 <PropertyForm initialValues={property} onSubmit={handleSubmit} />
             )}
+            {
+                isAnyLoading && (
+                    <div className={styles.loadingOverlay}>
+                        <div className={styles.spinner}></div>
+                    </div>
+                )
+            }
         </div>
     );
 };

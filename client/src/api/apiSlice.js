@@ -156,6 +156,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Favorites'], // Invalidate Favorites khi xóa
     }),
+    
   }),
 });
 

@@ -1,98 +1,239 @@
+/* Container chính */
 .formContainer {
-    background-color: #ffffff;
-    border-radius: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 32px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     animation: fadeIn 0.5s ease;
 }
 
-.formTitle {
-    font-size: 1.8rem;
+/* Label */
+.form-label {
     font-weight: 600;
-    margin-bottom: 24px;
-    color: #333;
+    margin-bottom: 6px;
+    
 }
 
-.label {
-    font-weight: 500;
-    color: #555;
-}
-
+/* Input, select, textarea (đẹp hơn & nhất quán) */
 .input,
 .select,
-.textarea {
-    transition: border-color 0.2s, box-shadow 0.2s;
+textarea,
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: none;
 }
 
 .input:focus,
 .select:focus,
-.textarea:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+textarea:focus,
+.form-control:focus,
+.form-select:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.25);
     outline: none;
 }
 
+textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+}
+
+/* Hàng hình ảnh */
 .imageRow {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
+    gap: 10px;
 }
 
-.addImageBtn {
-    margin-top: 8px;
+.imageRow input {
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    transition: 0.2s;
 }
 
-.removeImageBtn {
-    background-color: #e3342f;
-    border: none;
-    color: white;
-    padding: 2px 8px;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    cursor: pointer;
+.imageRow input:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.2);
 }
 
-.removeImageBtn:hover {
-    background-color: #cc1f1a;
+.imageRow button {
+    flex-shrink: 0;
+    height: 38px;
 }
 
-.submitBtn {
-    background-color: #22c55e;
-    border: none;
-    color: white;
-    padding: 10px 24px;
+/* Các nút */
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
     font-size: 1rem;
-    border-radius: 8px;
-    transition: background-color 0.2s;
+    border: none;
+    transition: all 0.3s ease-in-out;
 }
 
-.submitBtn:hover {
-    background-color: #16a34a;
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
-.imagePreview {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: relative;
-  }
-  
-  .previewImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+}
+
+/* Text phụ & lỗi */
+.text-muted {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: 5px;
+    display: block;
+}
+
+.text-danger {
+    font-size: 0.875rem;
+    color: #e74a3b;
+    margin-top: 5px;
+}
+
+/* Alert */
+.alert {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    animation: slideIn 0.5s ease-in-out;
+}
+
+/* Animation */
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: scale(0.98);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
+    }
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    .formContainer {
+        padding: 20px 15px;
+    }
+
+    .col-md-6,
+    .col-md-4,
+    .col-md-3,
+    .col-12 {
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        width: 100%;
+    }
+
+    .imageRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .imageRow button {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+}
+
+
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .formContainer {
+        padding: 15px;
+    }
+
+    .col-md-6,
+    .col-md-4,
+    .col-md-3,
+    .col-12 {
+        margin-bottom: 15px;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .imageRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .imageRow button {
+        margin-top: 10px;
+        align-self: flex-end;
     }
 }
