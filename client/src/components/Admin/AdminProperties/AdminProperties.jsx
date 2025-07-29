@@ -20,7 +20,7 @@ const AdminProperties = () => {
     const handlePrevPage = () => page > 1 && setPage((prev) => prev - 1);
     //
     const navigate = useNavigate();
-    const [deleteProperty,{isLoading:loadingDelete}] = useDeletePropertyMutation();
+    const [deleteProperty, { isLoading: loadingDelete }] = useDeletePropertyMutation();
     const [toast, setToast] = useState({ message: '', type: '' });
     const [isSuccess, setIsSuccess] = useState(null);
     //
@@ -44,6 +44,9 @@ const AdminProperties = () => {
             setIsSuccess(true);
             setShowConfirm(false)
             refetch();
+            setTimeout(() => {
+                setToast({ message: '', type: '' });
+            }, 3000);
         } catch (err) {
             setToast({
                 message: err?.data?.message || err.message,
@@ -52,7 +55,7 @@ const AdminProperties = () => {
             setIsSuccess(false);
         }
     };
-    const isAnyLoading = loadingProperties || loadingDelete ;
+    const isAnyLoading = loadingProperties || loadingDelete;
 
     const truncateText = (text, maxLength) => {
         if (!text) return '';
@@ -68,20 +71,11 @@ const AdminProperties = () => {
                     </div>
                 )}
                 <h2 className="mb-4">Trang Quản Trị Properties</h2>
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    isSuccess={isSuccess}
-                    onClose={() => {
-                        setToast({ message: '', type: '' });
-                        setIsSuccess(null);
-                    }}
-                />
                 {/* Cards thống kê */}
                 <div className="row mb-4">
                     {/* <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
                 <h2 className="mb-4">Trang Quản Trị</h2>
-
+                
                 {/* Cards thống kê */}
                     <div className="row mb-4">
                         <Link to="/admin/properties" className="col-md-4 col-lg-3 mb-3">
@@ -95,6 +89,15 @@ const AdminProperties = () => {
                             </div>
                         </Link>
 
+                        <Toast
+                            message={toast.message}
+                            type={toast.type}
+                            isSuccess={isSuccess}
+                            onClose={() => {
+                                setToast({ message: '', type: '' });
+                                setIsSuccess(null);
+                            }}
+                        />
                         <div className="card">
                             <div className="card-header d-flex justify-content-between">
                                 <strong>Danh sách BĐS</strong>
@@ -125,15 +128,15 @@ const AdminProperties = () => {
                                         ) : (
                                             properties.map((property) => (
                                                 <tr key={property.id} className={styles.fadeInRow}>
-                                                    <td>{truncateText(property.title,40)}</td>
+                                                    <td>{truncateText(property.title, 40)}</td>
                                                     <td>{property.type}</td>
                                                     <td>{property.area} m2</td>
-                                                    <td>{truncateText(property.location,20)}</td>
+                                                    <td>{truncateText(property.location, 20)}</td>
                                                     <td className={styles.img}><img src={property.images[0]} alt="" /></td>
                                                     <td>{property.bedrooms}</td>
                                                     <td>{property.bathrooms}</td>
-                                                    <td className={styles.description}>{truncateText(property.description,20)}</td>
-                                                    <td>{truncateText(property.price.toLocaleString(),20)}đ</td>
+                                                    <td className={styles.description}>{truncateText(property.description, 20)}</td>
+                                                    <td>{truncateText(property.price.toLocaleString(), 20)}đ</td>
                                                     <td>
                                                         {property.createdat
                                                             ? new Date(property.createdat).toLocaleDateString('vi-VN')
