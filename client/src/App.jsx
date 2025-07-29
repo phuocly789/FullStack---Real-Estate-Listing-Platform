@@ -14,6 +14,10 @@ import AdminContact from './components/Admin/AdminContact/AdminContact';
 import EditProperty from './components/Admin/AdminProperties/EditProperty';
 import AddProperty from './components/Admin/AdminProperties/AddProperty';
 import FavoritePage from './pages/FavoritePage/FavoritePage';
+import EditPropertyForm from './components/Admin/AdminProperties/EditProperty';
+import AddPropertyForm from './components/Admin/AdminProperties/AddProperty';
+import EditPropertyPage from './components/Admin/AdminProperties/EditPropertyPage/EditPropertyPage';
+import AddPropertyPage from './components/Admin/AdminProperties/AddPropertyPage/AddPropertyPage';
 
 
 const App = () => (
@@ -50,11 +54,11 @@ const App = () => (
       />
       <Route
         path="/admin_properties/edit/:id"
-        element={<ProtectedRoute element={<EditProperty />} allowedRoles={['ADMIN']} />}
+        element={<ProtectedRoute element={<EditPropertyPage />} allowedRoles={['ADMIN']} />}
       />
       <Route
         path="/admin_properties/Add"
-        element={<ProtectedRoute element={<AddProperty />} allowedRoles={['ADMIN']} />}
+        element={<ProtectedRoute element={<AddPropertyPage />} allowedRoles={['ADMIN']} />}
       />
 
 
