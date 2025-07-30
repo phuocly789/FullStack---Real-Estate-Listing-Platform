@@ -28,7 +28,10 @@ const PropertyCard = ({ id, title, price, area, location, image, imageCount, isF
                         {price ? `${truncateText(price.toLocaleString(), 20)} VND` : 'Giá không xác định'}
                     </div>
                     <div className={styles.detail}>
-                        {area ? `${truncateText(area, 20)} m²` : 'Diện tích không xác định'} - {truncateText(location, 30) || 'Vị trí không xác định'}
+                        <b>Diện tích:</b> {area ? `${truncateText(area, 20)} m²` : 'Diện tích không xác định'}
+                    </div>
+                    <div className={styles.location}>
+                        {truncateText(location, 100) || 'Vị trí không xác định'}
                     </div>
                     <div className={styles.footer}>
                         <span>

@@ -100,6 +100,7 @@ const SimilarProperties = ({ currentId }) => {
                         price={prop.price}
                         area={prop.area}
                         location={prop.location}
+                        createdat={prop.createdat}
                         image={
                             prop.images[0]
                                 ? `${prop.images[0]}`

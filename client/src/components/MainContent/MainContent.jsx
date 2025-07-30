@@ -59,7 +59,7 @@ const MainContent = ({ properties }) => {
     };
 
     return (
-        <div className={`container-fluid ${styles.section}`}>
+        <div className={`container ${styles.section}`}>
             <div className="d-flex align-items-center mb-3">
                 {/* Nút điều hướng trái */}
                 <button

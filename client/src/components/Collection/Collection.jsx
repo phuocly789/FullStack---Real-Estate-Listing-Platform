@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import styles from "./Collection.module.css";
-import SearchBar from "../SearchBar/SearchBar";
 import {
     useGetPropertiesQuery,
     useAddFavoriteMutation,
     useRemoveFavoriteMutation,
-    useGetFavoritesQuery
+    useGetFavoritesQuery,
 } from "../../api/apiSlice";
 import Toast from "../Toast/Toast";
 import PropertyCard from "../PropertyCard/PropertyCard";
@@ -15,39 +14,77 @@ const Collection = () => {
     const [page, setPage] = useState(1);
     const limit = 8;
     const [filters, setFilters] = useState({
-        title: '',
-        location: '',
-        areaSort: '',
-        priceSort: ''
+        title: "",
+        location: "",
+        areaSort: "",
+        priceSort: "",
     });
-    const [toast, setToast] = useState({ message: '', type: '' });
+    const [toast, setToast] = useState({ message: "", type: "" });
+    const [title, setTitle] = useState("");
+    const [location, setLocation] = useState("");
+    const [areaSort, setAreaSort] = useState("");
+    const [priceSort, setPriceSort] = useState("");
+    const [removeFavorite] = useRemoveFavoriteMutation();
+    const [addFavorite] = useAddFavoriteMutation();
+    const [isSearching, setIsSearching] = useState(false);
     const listRef = useRef(null);
 
-    const { data, isLoading, isError } = useGetPropertiesQuery({ page, limit, ...filters }, { refetchOnMountOrArgChange: true });
-    const { data: favorites, isLoading: isFavoritesLoading } = useGetFavoritesQuery();
-    const [addFavorite] = useAddFavoriteMutation();
-    const [removeFavorite] = useRemoveFavoriteMutation();
+    const { data: propertiesFull, isLoading: isLoadingPropertiesFull, isFetching: isFetchingPropertiesFull } = useGetPropertiesQuery(
+        {},
+        { refetchOnMountOrArgChange: true }
+    );
+    const { data, isLoading: isLoadingProperties, isFetching: isFetchingProperties, isError } = useGetPropertiesQuery(
+        { page, limit, ...filters },
+        { refetchOnMountOrArgChange: true }
+    );
+    const { data: favorites, isLoading: isLoadingFavorites, isFetching: isFetchingFavorites } = useGetFavoritesQuery();
 
-    const favoriteIds = new Set(favorites?.map(fav => fav.propertyid) || []);
+    const isAnyLoading = isLoadingPropertiesFull || isLoadingProperties || isLoadingFavorites || isSearching || isFetchingPropertiesFull || isFetchingProperties || isFetchingFavorites;
+
+    const favoriteIds = new Set(favorites?.map((fav) => fav.propertyid) || []);
     const properties = data?.properties || [];
     const totalCount = data?.totalCount || 0;
     const totalPages = Math.ceil(totalCount / limit);
 
-    const handleSearch = (newFilters) => {
+    // Hàm trích xuất tỉnh/thành phố
+    const extractProvince = (location) => {
+        if (!location || typeof location !== "string") {
+            console.log("Invalid location:", location);
+            return "Unknown";
+        }
+        const parts = location.split(",").map((part) => part.trim());
+        return parts.length > 1 ? parts[parts.length - 1] : location;
+    };
+
+    // Rút gọn văn bản
+    const truncateText = (text, maxLength) => {
+        if (!text) return "";
+        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    };
+
+    // Tạo danh sách khu vực duy nhất từ properties
+    const locations = useMemo(() => {
+        return propertiesFull?.properties
+            ? [...new Set(propertiesFull.properties.map((prop) => extractProvince(prop.location)))]
+            : [];
+    }, [propertiesFull]);
+
+    const handleSearch = () => {
+        setIsSearching(true);
         setPage(1);
-        setFilters(newFilters);
+        setFilters({ title, location, areaSort, priceSort });
         setCheck(!check);
     };
 
     const handleClearFilters = () => {
-        setFilters({
-            title: '',
-            location: '',
-            areaSort: '',
-            priceSort: ''
-        });
+        setTitle("");
+        setLocation("");
+        setAreaSort("");
+        setPriceSort("");
+        setFilters({ title: "", location: "", areaSort: "", priceSort: "" });
         setPage(1);
         setCheck(!check);
+        setIsSearching(true);
     };
 
     const handleNextPage = () => setPage((prev) => prev + 1);
@@ -55,30 +92,30 @@ const Collection = () => {
 
     const handleToggleFavorite = async (propertyId) => {
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem("token");
             if (!token) {
-                setToast({ message: 'Vui lòng đăng nhập để thêm vào danh sách yêu thích!', type: 'error' });
+                setToast({ message: "Vui lòng đăng nhập để thêm vào danh sách yêu thích!", type: "error" });
                 return;
             }
 
             if (favoriteIds.has(propertyId)) {
                 await removeFavorite(propertyId).unwrap();
-                setToast({ message: 'Xóa khỏi danh sách yêu thích thành công', type: 'success' });
+                setToast({ message: "Xóa khỏi danh sách yêu thích thành công", type: "success" });
             } else {
                 await addFavorite(propertyId).unwrap();
-                setToast({ message: 'Thêm vào danh sách yêu thích thành công', type: 'success' });
+                setToast({ message: "Thêm vào danh sách yêu thích thành công", type: "success" });
             }
         } catch (error) {
-            console.error('Error toggling favorite:', error);
-            const errorMessage = error?.data?.message || 'Có lỗi xảy ra khi thêm/xóa yêu thích.';
-            setToast({ message: errorMessage, type: 'error' });
+            console.error("Error toggling favorite:", error);
+            const errorMessage = error?.data?.message || "Có lỗi xảy ra khi thêm/xóa yêu thích.";
+            setToast({ message: errorMessage, type: "error" });
         }
     };
 
     useEffect(() => {
         if (toast.message) {
             const timeout = setTimeout(() => {
-                setToast({ message: '', type: '' });
+                setToast({ message: "", type: "" });
             }, 2000);
             return () => clearTimeout(timeout);
         }
@@ -86,14 +123,24 @@ const Collection = () => {
 
     useEffect(() => {
         if (listRef.current) {
-            listRef.current.scrollIntoView({ behavior: 'smooth' });
+            listRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [page, filters]);
+
+    useEffect(() => {
+        if (!isFetchingProperties && !isFetchingPropertiesFull && !isFetchingFavorites) {
+            setIsSearching(false);
+        }
+    }, [isFetchingProperties, isFetchingPropertiesFull, isFetchingFavorites]);
 
     const renderPagination = () => {
         const pageNumbers = [];
         const maxPagesToShow = 5;
-        const ellipsis = <span key={`ellipsis-${pageNumbers.length}`} className={styles.ellipsis}>...</span>;
+        const ellipsis = (
+            <span key={`ellipsis-${pageNumbers.length}`} className={styles.ellipsis}>
+                ...
+            </span>
+        );
 
         if (totalPages <= maxPagesToShow) {
             for (let i = 1; i <= totalPages; i++) {
@@ -102,7 +149,7 @@ const Collection = () => {
                         key={i}
                         className={`btn mx-1 ${i === page ? "btn-primary" : "btn-outline-primary"}`}
                         onClick={() => setPage(i)}
-                        disabled={isLoading}
+                        disabled={isAnyLoading}
                     >
                         {i}
                     </button>
@@ -114,7 +161,7 @@ const Collection = () => {
                     key={1}
                     className={`btn mx-1 ${1 === page ? "btn-primary" : "btn-outline-primary"}`}
                     onClick={() => setPage(1)}
-                    disabled={isLoading}
+                    disabled={isAnyLoading}
                 >
                     1
                 </button>
@@ -141,7 +188,7 @@ const Collection = () => {
                         key={i}
                         className={`btn mx-1 ${i === page ? "btn-primary" : "btn-outline-primary"}`}
                         onClick={() => setPage(i)}
-                        disabled={isLoading}
+                        disabled={isAnyLoading}
                     >
                         {i}
                     </button>
@@ -157,7 +204,7 @@ const Collection = () => {
                     key={totalPages}
                     className={`btn mx-1 ${totalPages === page ? "btn-primary" : "btn-outline-primary"}`}
                     onClick={() => setPage(totalPages)}
-                    disabled={isLoading}
+                    disabled={isAnyLoading}
                 >
                     {totalPages}
                 </button>
@@ -167,120 +214,170 @@ const Collection = () => {
         return pageNumbers;
     };
 
-    if (isLoading || isFavoritesLoading) {
-        return (
-            <div className={styles.loaderContainer}>
-                <div className={styles.spinner}></div>
-                <p>Đang tải dữ liệu...</p>
-            </div>
-        );
-    }
-
-    if (isError || !properties) {
-        return (
-            <div className={styles.errorContainer}>
-                <p>Lỗi: Không thể tải dữ liệu bất động sản hoặc danh sách yêu thích.</p>
-                <button className={`btn btn-primary ${styles.retryBtn}`} onClick={() => window.location.reload()}>
-                    Thử lại
-                </button>
-            </div>
-        );
-    }
-
-    if (properties.length === 0 && !check) {
-        return (
-            <div className={styles.container}>
-                <div className="row">
-                    <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+    return (
+        <div className={styles.container}>
+            {isAnyLoading && (
+                <div className={styles.loadingOverlay}>
+                    <div className={styles.spinner}></div>
+                    <p>Đang tải dữ liệu...</p>
+                </div>
+            )}
+            <div className="row">
+                <div ref={listRef} />
+                <div className={styles.wrapper}>
+                    <h2 className={styles.title}>Tìm kiếm bất động sản</h2>
+                    <p className={styles.subtitle}>
+                        Lọc theo tên, khu vực, diện tích hoặc giá cả để tìm bất động sản phù hợp với bạn
+                    </p>
+                    <div className={styles.searchContainer}>
+                        <input
+                            type="text"
+                            placeholder="Tìm theo tên..."
+                            className={styles.input}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            disabled={isAnyLoading}
+                        />
+                        <select
+                            className={styles.input}
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                            disabled={isAnyLoading}
+                        >
+                            <option value="">Chọn khu vực</option>
+                            {locations.map((loc) => (
+                                <option key={loc} value={loc}>
+                                    {truncateText(loc, 20)}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            className={styles.input}
+                            value={areaSort}
+                            onChange={(e) => setAreaSort(e.target.value)}
+                            disabled={isAnyLoading}
+                        >
+                            <option value="">Sắp xếp diện tích</option>
+                            <option value="asc">Diện tích: Thấp đến cao</option>
+                            <option value="desc">Diện tích: Cao đến thấp</option>
+                        </select>
+                        <select
+                            className={styles.input}
+                            value={priceSort}
+                            onChange={(e) => setPriceSort(e.target.value)}
+                            disabled={isAnyLoading}
+                        >
+                            <option value="">Sắp xếp giá</option>
+                            <option value="asc">Giá: Thấp đến cao</option>
+                            <option value="desc">Giá: Cao đến thấp</option>
+                        </select>
+                        <div className={styles.buttonContainer}>
+                            <button
+                                className={styles.searchButton}
+                                onClick={handleSearch}
+                                disabled={isAnyLoading}
+                            >
+                                {isAnyLoading ? "Đang tải..." : "Tìm kiếm"}
+                            </button>
+                            {(title || location || areaSort || priceSort) && (
+                                <button
+                                    className={styles.clearButton}
+                                    onClick={handleClearFilters}
+                                    disabled={isAnyLoading}
+                                >
+                                    Xóa bộ lọc
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+                {isError || !properties ? (
+                    <div className={styles.errorContainer}>
+                        <p>Lỗi: Không thể tải dữ liệu bất động sản hoặc danh sách yêu thích.</p>
+                        <button
+                            className={`btn btn-primary ${styles.retryBtn}`}
+                            onClick={() => window.location.reload()}
+                        >
+                            Thử lại
+                        </button>
+                    </div>
+                ) : properties.length === 0 && !check ? (
                     <div className={styles.emptyContainer}>
                         <p>Không có bất động sản nào để hiển thị.</p>
                     </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (properties.length === 0 && check) {
-        return (
-            <div className={styles.container}>
-                <div className="row">
-                    <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+                ) : properties.length === 0 && check ? (
                     <div className={styles.emptyContainer}>
                         <p>Không tìm thấy bất động sản nào phù hợp với bộ lọc của bạn.</p>
                     </div>
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div className={styles.container}>
-            <div className="row">
-                <div ref={listRef} />
-                <SearchBar onSearch={handleSearch} isLoading={isLoading} />
-                <Toast
-                    message={toast.message}
-                    type={toast.type}
-                    onClose={() => setToast({ message: '', type: '' })}
-                />
-                <div className={styles.grid}>
-                    {properties.map((prop) => (
-                        <PropertyCard
-                            key={prop.id}
-                            id={prop.id}
-                            title={prop.title}
-                            price={prop.price}
-                            area={prop.area}
-                            createdat={prop.createdat}
-                            location={prop.location}
-                            image={
-                                prop.images && prop.images[0]
-                                    ? `${prop.images[0]}`
-                                    : 'https://via.placeholder.com/300'
-                            }
-                            imageCount={prop.images ? prop.images.length : 0}
-                            isFavorite={favoriteIds.has(prop.id)}
-                            onToggleFavorite={() => handleToggleFavorite(prop.id)}
+                ) : (
+                    <>
+                        <Toast
+                            message={toast.message}
+                            type={toast.type}
+                            onClose={() => setToast({ message: "", type: "" })}
                         />
-                    ))}
-                </div>
-                <div className="d-flex justify-content-center my-4">
-                    {totalPages > 1 && (
-                        <button
-                            onClick={handlePrevPage}
-                            className="btn btn-outline-primary mx-2"
-                            disabled={page === 1 || isLoading}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#1f1f1f"
-                            >
-                                <path d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z" />
-                            </svg>
-                        </button>
-                    )}
-                    {renderPagination()}
-                    {totalPages > 1 && (
-                        <button
-                            onClick={handleNextPage}
-                            className="btn btn-outline-primary mx-2"
-                            disabled={properties.length < limit || page === totalPages || isLoading}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="24px"
-                                viewBox="0 -960 960 960"
-                                width="24px"
-                                fill="#1f1f1f"
-                            >
-                                <path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z" />
-                            </svg>
-                        </button>
-                    )}
-                </div>
+                        <div className={styles.grid}>
+                            {properties.map((prop) => (
+                                <PropertyCard
+                                    key={prop.id}
+                                    id={prop.id}
+                                    title={prop.title}
+                                    price={prop.price}
+                                    area={prop.area}
+                                    createdat={prop.createdat}
+                                    location={prop.location}
+                                    image={
+                                        prop.images && prop.images[0]
+                                            ? `${prop.images[0]}`
+                                            : "https://via.placeholder.com/300"
+                                    }
+                                    imageCount={prop.images ? prop.images.length : 0}
+                                    isFavorite={favoriteIds.has(prop.id)}
+                                    onToggleFavorite={() => handleToggleFavorite(prop.id)}
+                                />
+                            ))}
+                        </div>
+                        {totalPages > 1 && (
+                            <div className="d-flex justify-content-center my-4">
+                                {totalPages > 1 && (
+                                    <button
+                                        onClick={handlePrevPage}
+                                        className="btn btn-outline-primary mx-2"
+                                        disabled={page === 1 || isAnyLoading}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#1f1f1f"
+                                        >
+                                            <path d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z" />
+                                        </svg>
+                                    </button>
+                                )}
+                                {renderPagination()}
+                                {totalPages > 1 && (
+                                    <button
+                                        onClick={handleNextPage}
+                                        className="btn btn-outline-primary mx-2"
+                                        disabled={properties.length < limit || page === totalPages || isAnyLoading}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            height="24px"
+                                            viewBox="0 -960 960 960"
+                                            width="24px"
+                                            fill="#1f1f1f"
+                                        >
+                                            <path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z" />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </>
+                )}
             </div>
         </div>
     );

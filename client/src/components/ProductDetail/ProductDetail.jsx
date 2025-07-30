@@ -28,11 +28,10 @@ const PropertyDetail = () => {
         data: favorites,
         isLoading: isFavoritesLoading,
         isError: isFavoritesError,
-        refetch: refetchFavorites, // 👈 lấy hàm refetch ở đây
+        refetch: refetchFavorites,
     } = useGetFavoritesQuery(undefined, {
         skip: !token,
     });
-
 
     // useEffect cho toast
     useEffect(() => {
@@ -43,6 +42,11 @@ const PropertyDetail = () => {
             return () => clearTimeout(timeout);
         }
     }, [toast]);
+
+    // Cuộn lên đầu trang khi id thay đổi
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [id]);
 
     // Hàm xử lý yêu thích
     const handleToggleFavorite = async () => {
@@ -79,9 +83,10 @@ const PropertyDetail = () => {
     };
 
     // Kiểm tra trạng thái loading hoặc error
-    if (isLoading || isFavoritesLoading) {
+    const isAnyLoading = isLoading || isFavoritesLoading;
+    if (isAnyLoading) {
         return (
-            <div className={styles.loaderContainer}>
+            <div className={styles.loadingOverlay}>
                 <div className={styles.spinner}></div>
                 <p>Đang tải dữ liệu...</p>
             </div>
@@ -100,8 +105,6 @@ const PropertyDetail = () => {
     }
 
     const isFavorite = favorites?.some(fav => String(fav.propertyid) === String(id));
-
-
 
     return (
         <div className={styles.container}>
@@ -141,7 +144,7 @@ const PropertyDetail = () => {
                                 <p className={styles.detailText}>Diện tích: <i>{truncateText(property.area?.toString(), 20)} m²</i></p>
                                 <p className={styles.detailText}>Phòng ngủ: <i>{property.bedrooms ? truncateText(property.bedrooms.toString(), 20) : 'Không xác định'}</i></p>
                                 <p className={styles.detailText}>Giá: <i>{property.price ? truncateText(`${property.price.toLocaleString()} VND`, 30) : 'Không xác định'}</i></p>
-                                <p className={styles.detailText}>Vị trí: <i>{truncateText(property.location, 50)}</i></p>
+                                <p className={styles.detailText}>Vị trí: <i>{property.location}</i></p>
                             </div>
                             <span className={styles.priceTag}>{truncateText('+1% Giá tăng trong 1 tháng qua', 30)}</span>
                         </div>
@@ -157,7 +160,7 @@ const PropertyDetail = () => {
                                     <p className={styles.text}><i>{property.description}</i></p>
                                 </div>
                             )}
-                            <MapSection latitude={property.latitude} longitude={property.longitude} />
+                            <MapSection key={id} latitude={property.latitude} longitude={property.longitude} />
                         </div>
                         <SimilarProperties currentId={id} />
                     </div>
