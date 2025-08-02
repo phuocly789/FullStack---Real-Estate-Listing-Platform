@@ -48,13 +48,15 @@ const MainContent = ({ properties }) => {
     // Hàm điều hướng tab
     const handleNextTabs = () => {
         if (tabStartIndex + maxTabs < provinces.length) {
-            setTabStartIndex(tabStartIndex + 1);
+            setTabStartIndex(tabStartIndex + maxTabs); // Di chuyển một nhóm tab
+        } else {
+            setTabStartIndex(provinces.length - maxTabs); // Đảm bảo tab cuối hiển thị
         }
     };
 
     const handlePrevTabs = () => {
         if (tabStartIndex > 0) {
-            setTabStartIndex(tabStartIndex - 1);
+            setTabStartIndex(Math.max(tabStartIndex - maxTabs, 0)); // Di chuyển ngược lại một nhóm
         }
     };
 
@@ -71,18 +73,19 @@ const MainContent = ({ properties }) => {
                 </button>
 
                 {/* Danh sách tab */}
-                <ul className="nav nav-tabs flex-grow-1">
+                <ul className={`nav nav-tabs flex-grow-1 ${styles.navTabs}`}>
                     {tabs.map((tab) => (
                         <li className="nav-item" key={tab.id}>
                             <button
                                 className={`${styles.navLink} ${activeTab === tab.id ? styles.navLinkActive : ''}`}
                                 onClick={() => setActiveTab(tab.id)}
                             >
-                                {truncateText(tab.label, 17)} {/* Rút gọn tên tỉnh */}
+                                {tab.label}
                             </button>
                         </li>
                     ))}
                 </ul>
+
 
                 {/* Nút điều hướng phải */}
                 <button

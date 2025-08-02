@@ -96,3 +96,33 @@
   color: #ccc;
   cursor: not-allowed;
 }
+
+.navTabs {
+  display: flex;
+  flex-wrap: nowrap;
+  /* Không cho xuống hàng */
+  overflow-x: auto;
+  /* Cho scroll ngang nếu nhiều tab */
+  white-space: nowrap;
+  /* Không cho chữ tự xuống dòng */
+  /* scrollbar-width: none; */
+  /* Ẩn scrollbar Firefox */
+  /* padding-right: 50px; */
+}
+
+.navTabs::-webkit-scrollbar {
+  display: none;
+  /* Ẩn scrollbar Chrome, Edge */
+}
+
+.navTabs li {
+  flex: 0 0 auto;
+  /* Giữ kích thước cố định */
+
+}
+
+.navTabs::after {
+  content: "";
+  flex: 0 0 20px;
+  /* Chừa khoảng trắng cuối 20px */
+}

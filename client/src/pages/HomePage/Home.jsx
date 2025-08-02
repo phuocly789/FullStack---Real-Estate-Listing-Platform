@@ -30,12 +30,15 @@ const Home = () => {
         );
     }
 
+
+    console.table(data?.properties);
     return (
         <>
             <Navbar />
             <div className="banner-section">
                 <img src={banner} alt="banner" className="w-100" />
             </div>
+            
             <MainContent properties={data.properties}   />
             <PropertyList properties={data.properties} />
             <Footer />
