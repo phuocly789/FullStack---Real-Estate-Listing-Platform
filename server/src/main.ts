@@ -6,15 +6,11 @@ async function bootstrap() {
   console.log('Starting NestJS application...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL);
   const app = await NestFactory.create(AppModule);
-  app.enableCors({
-    origin: [
-      'http://localhost:3001', 
-      'http://localhost:5173',
-      'https://full-stack-real-estate-listing-plat.vercel.app',
-    ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+ app.enableCors({
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+});
   app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send({ error: 'Internal Server Error', message: err.message });
