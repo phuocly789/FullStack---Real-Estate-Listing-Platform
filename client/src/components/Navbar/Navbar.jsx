@@ -102,11 +102,11 @@ const Navbar = () => {
                                             <a href="/profile" className={navItem.dropdownLink}>Hồ Sơ Cá Nhân</a>
                                         </li>
                                     )}
-                                    {/* {user?.role === 'USER' && (
+                                    {user?.role === 'USER' && (
                                         <li className={navItem.dropdownItem}>
                                             <a href="/favorites" className={navItem.dropdownLink}>Danh Sách Yêu Thích</a>
                                         </li>
-                                    )} */}
+                                    )}
                                 </ul>
                             </li>
                         ) : (
