@@ -6,8 +6,12 @@ async function bootstrap() {
   console.log('Starting NestJS application...');
   console.log('DATABASE_URL:', process.env.DATABASE_URL);
   const app = await NestFactory.create(AppModule);
- app.enableCors({
-  origin: '*',
+app.enableCors({
+  origin: [
+    'https://full-stack-real-estate-listing-plat.vercel.app', // Frontend chính
+    'http://localhost:3001', // Local dev
+    'http://localhost:5173', // Local dev
+  ],
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 });
