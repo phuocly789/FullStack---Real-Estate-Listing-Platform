@@ -10,6 +10,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3001', 
       'http://localhost:5173',
+      'https://full-stack-real-estate-listing-plat.vercel.app',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
